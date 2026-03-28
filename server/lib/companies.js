@@ -1,7 +1,15 @@
 /**
- * Enter client base — all companies with estimated labor risk factors.
- * Sources: LinkedIn, annual reports, news, CNJ benchmarks.
- * These are conservative estimates; Claude + web_search will enrich with real-time data.
+ * Enter client base — all companies with researched labor risk factors.
+ *
+ * Sources (March 2026):
+ *  - Employee counts: CVM filings, SEC 20-F, annual reports, DIEESE
+ *  - Layoff/M&A data: Contraf-CUT, SINTETEL, SNA, SIEMACO, news
+ *  - Union activity: Sindicato dos Bancários SP, SINTERGIA, SNA, SINDPD
+ *  - TST Ranking das Partes, CNJ Justiça em Números 2025
+ *
+ * Key: Itaú had 14,818 active labor cases (TST 2015 baseline)
+ *       Top 100 companies avg 4,315 cases each (13.6% of all cases)
+ *       R$50.6B paid by employers in labor lawsuits in 2025 (record)
  */
 
 export const companies = [
@@ -13,45 +21,45 @@ export const companies = [
     name: 'Nubank',
     sector: 'financial_services',
     segment: 'Financial Services',
-    employees: 8000,
+    employees: 8716,  // FY2024 global, ~7k BR-based
     headquarters: 'São Paulo, SP',
     states: ['SP', 'RJ', 'MG', 'PE', 'DF'],
     cargoDiversity: 6,
     multiState: 5,
-    unionActivity: 3,
-    operationalRatio: 0.35,
+    unionActivity: 5,  // ↑ SEEB-SP formally engaged; 12-14 justa causa dismissals Nov 2025 after RTO opposition
+    operationalRatio: 0.30,
     seniorityVariance: 4,
-    recentLayoffs: 5,
+    recentLayoffs: 7,  // ↑ justa causa dismissals for opposing RTO policy; 20% turnover 2023 (~1,180/yr)
     mAndA: 2,
-    restructuring: 4,
+    restructuring: 5,  // ↑ mandatory return-to-office triggered manifesto from 300 employees
     privatization: 0,
-    notes: 'Demissões em 2023-2024, crescimento rápido → alta rotatividade em tech e atendimento',
+    notes: 'Nov 2025: 12-14 dismissed por justa causa após oposição ao RTO — retaliação sindical exposure. Turnover 20% em 2023. SEEB-SP/Osasco cobre Nubank. 114M clientes.',
   },
   {
     id: 'santander',
     name: 'Santander Brasil',
     sector: 'financial_services',
     segment: 'Financial Services',
-    employees: 55000,
+    employees: 55646,  // FY2024 consolidated
     headquarters: 'São Paulo, SP',
     states: ['SP', 'RJ', 'MG', 'RS', 'PR', 'BA', 'PE', 'CE', 'DF', 'SC', 'GO', 'ES'],
     cargoDiversity: 8,
     multiState: 10,
-    unionActivity: 9,
+    unionActivity: 10,  // ↑ Contraf-CUT jornada internacional de luta; bancários fecham agências em protesto
     operationalRatio: 0.55,
     seniorityVariance: 8,
-    recentLayoffs: 4,
+    recentLayoffs: 6,  // ↑ 15+ demissões/mês em alguns estados; proporção feminina caiu 59%→43%
     mAndA: 3,
-    restructuring: 5,
+    restructuring: 6,  // ↑ reestruturação sem diálogo sindical; discriminação de gênero documentada
     privatization: 0,
-    notes: 'Bancários com sindicato muito forte (CONTRAF), fechamento de agências, digitalização',
+    notes: 'Reestruturação sem aviso ao sindicato. Contraf-CUT coordenação internacional. Proporção feminina caiu 59%→43% = exposição discriminação gênero. 15+ demissões/mês reportadas.',
   },
   {
     id: 'itau',
     name: 'Itaú Unibanco',
     sector: 'financial_services',
     segment: 'Financial Services',
-    employees: 96000,
+    employees: 96219,  // FY2024 consolidated, ~88k BR
     headquarters: 'São Paulo, SP',
     states: ['SP', 'RJ', 'MG', 'RS', 'PR', 'BA', 'PE', 'CE', 'DF', 'SC', 'GO', 'ES', 'PA', 'MA'],
     cargoDiversity: 9,
@@ -59,18 +67,18 @@ export const companies = [
     unionActivity: 9,
     operationalRatio: 0.50,
     seniorityVariance: 9,
-    recentLayoffs: 6,
+    recentLayoffs: 8,  // ↑ ~1,000 demissões Set/2025 por monitoramento de produtividade home office. TRT-SP ação.
     mAndA: 7,
     restructuring: 7,
     privatization: 0,
-    notes: 'Maior banco privado do Brasil. Fusão Itaú+Unibanco gerou passivo trabalhista massivo. Fechamento de agências acelerado.',
+    notes: 'TST 2015: 14,818 ações ativas. Set/2025: ~1,000 demitidos por keystroke monitoring (home office). Sindicato levou ao TRT-SP, acordo 4-6 meses salário + R$9k. Provisão total ~R$36.2B. Maior banco privado BR.',
   },
   {
     id: 'bradesco',
     name: 'Bradesco',
     sector: 'financial_services',
     segment: 'Financial Services',
-    employees: 87000,
+    employees: 84022,  // FY2024 consolidated holding; 72,642 Banco Bradesco
     headquarters: 'Osasco, SP',
     states: ['SP', 'RJ', 'MG', 'RS', 'PR', 'BA', 'PE', 'CE', 'DF', 'SC', 'GO', 'ES', 'PA'],
     cargoDiversity: 9,
@@ -78,11 +86,11 @@ export const companies = [
     unionActivity: 9,
     operationalRatio: 0.50,
     seniorityVariance: 9,
-    recentLayoffs: 7,
+    recentLayoffs: 8,  // ↑ 2,200 demissões FY2024; 390 agências + 903 pontos + 92 UNs fechadas
     mAndA: 5,
-    restructuring: 8,
+    restructuring: 9,  // ↑ PDV lançado; R$570M provisão especial para reestruturação
     privatization: 0,
-    notes: 'Reestruturação massiva 2023-2025 sob Marcelo Noronha, milhares de demissões, fechamento de agências',
+    notes: 'TST 2015: 11,316 ações. FY2024: 2,200 demissões, PDV, R$570M provisão reestruturação. CEO Noronha acelerou digitalização. Ratio cliente/func subiu (1,298 vs 1,227) = risco overwork.',
   },
   {
     id: 'c6bank',
@@ -439,19 +447,19 @@ export const companies = [
     name: 'Mercado Livre',
     sector: 'retail',
     segment: 'Retail',
-    employees: 40000,
+    employees: 33000,  // ~33k BR mid-2024; R$23B invested in BR 2024, R$57B planned 2026
     headquarters: 'São Paulo, SP',
     states: ['SP', 'RJ', 'MG', 'PR', 'RS', 'BA', 'PE', 'CE', 'SC', 'GO', 'DF'],
     cargoDiversity: 9,
     multiState: 10,
-    unionActivity: 5,
-    operationalRatio: 0.65,
+    unionActivity: 7,  // ↑ anti-union posture documented: fired employees after organizing assembly; SINDPD-SC cases
+    operationalRatio: 0.60,
     seniorityVariance: 6,
-    recentLayoffs: 2,
+    recentLayoffs: 5,  // ↑ Jan/2025: 118 LATAM-wide (38 BR), AI restructuring; 119 earlier for AI role elimination
     mAndA: 4,
-    restructuring: 3,
+    restructuring: 4,  // anti-union conduct; NDA/silence clauses on dismissed workers challenged
     privatization: 0,
-    notes: 'Crescimento explosivo de logística (Mercado Envios), milhares de operadores de CD. Contratação massiva → alta rotatividade.',
+    notes: 'Enter client (confirmed). Postura anti-sindical documentada (SINDPD-SC). Jan/2025: 38 BR demitidos por IA. STF courier classification looming. 21 CDs. R$57B investidos BR 2026.',
   },
   {
     id: 'ifood',
@@ -500,38 +508,38 @@ export const companies = [
     name: 'LATAM Airlines Brasil',
     sector: 'airlines',
     segment: 'Airlines',
-    employees: 20000,
+    employees: 22500,  // ~20,500 mid-2024 + 14% growth; ~22,500 by early 2025
     headquarters: 'São Paulo, SP',
     states: ['SP', 'RJ', 'MG', 'RS', 'PR', 'BA', 'DF', 'CE', 'PE', 'SC', 'PA', 'AM', 'GO'],
     cargoDiversity: 9,
     multiState: 10,
-    unionActivity: 9,
+    unionActivity: 10,  // ↑ SNA (Aeronautas) very active; TST actions on folga social
     operationalRatio: 0.75,
     seniorityVariance: 8,
-    recentLayoffs: 8,
+    recentLayoffs: 7,  // growth phase now but 2020 crisis layoffs still generating claims (2,743 tripulantes + 1,200)
     mAndA: 6,
-    restructuring: 9,
+    restructuring: 8,  // Chapter 11 exit 2022; R$4B government investment 2026
     privatization: 0,
-    notes: 'Recuperação judicial 2020-2022 → demissões massivas, corte de rotas, renegociação trabalhista. Sindicatos de pilotos, comissários e mecânicos são muito fortes.',
+    notes: 'Enter client (confirmed). 30% win rate increase com Enter (consumer). SNA muito ativo. Crise 2020: 2,743 tripulantes + 1,200 demitidos — ações ainda no pipeline. 60 destinos, 776 voos/dia.',
   },
   {
     id: 'azul',
     name: 'Azul Linhas Aéreas',
     sector: 'airlines',
     segment: 'Airlines',
-    employees: 14000,
+    employees: 15400,  // FY2024 estimate
     headquarters: 'Barueri, SP',
     states: ['SP', 'RJ', 'MG', 'RS', 'PR', 'BA', 'DF', 'CE', 'PE', 'SC', 'PA', 'AM', 'GO'],
     cargoDiversity: 8,
     multiState: 10,
-    unionActivity: 8,
+    unionActivity: 10,  // ↑ SNA acionou TST para bloquear 3,810 demissões; pilotos em estado de greve Dez/2025
     operationalRatio: 0.75,
     seniorityVariance: 7,
-    recentLayoffs: 6,
+    recentLayoffs: 9,  // ↑ 3,810 demissões planejadas, 500+ aeroviários já demitidos; 113 pilotos saíram 2024
     mAndA: 3,
-    restructuring: 7,
+    restructuring: 10,  // ↑ Chapter 11 (Mai/2025 - Fev/2026), US$2.5B dívida eliminada
     privatization: 0,
-    notes: 'Reestruturação de dívida 2023-2024, negociação trabalhista com sindicatos, operação regional extensa',
+    notes: 'Chapter 11 Mai/2025–Fev/2026. SNA acionou TST: 3,810 demissões. 500+ aeroviários demitidos. 113 pilotos saíram 2024 (48 só em Set/2025). Estado de greve Dez/2025. ~150 destinos.',
   },
 
   // ═══════════════════════════════════════
@@ -622,19 +630,19 @@ export const companies = [
     name: 'Hapvida',
     sector: 'healthcare',
     segment: 'Healthcare',
-    employees: 68000,
+    employees: 69000,  // 69k diretos + 28k médicos (2024)
     headquarters: 'Fortaleza, CE',
     states: ['CE', 'SP', 'RJ', 'MG', 'BA', 'PE', 'MA', 'PA', 'AM', 'GO', 'DF', 'PR', 'RS'],
-    cargoDiversity: 9,
+    cargoDiversity: 10,  // ↑ médicos, enfermeiros, técnicos, admin, suporte — maior diversidade da base
     multiState: 10,
-    unionActivity: 7,
+    unionActivity: 8,  // ↑ múltiplos sindicatos por profissão: SINDMED, SIPD, admin
     operationalRatio: 0.80,
     seniorityVariance: 7,
     recentLayoffs: 5,
     mAndA: 10,
-    restructuring: 8,
+    restructuring: 9,  // ↑ ANS investigando balanços desde 2024; financial distress; integração NDI incompleta
     privatization: 0,
-    notes: 'Fusão Hapvida+NotreDame Intermédica 2022 = MAIOR operadora do Brasil. Integração massiva de 70k+ funcionários. Médicos, enfermeiros, técnicos. Contencioso trabalhista explosivo.',
+    notes: 'MAIOR operadora BR. Fusão Hapvida+NDI 2022: 69k+28k médicos. ANS investigando balanços. 86 hospitais, 77 UPAs, 341 clínicas. Insalubridade +1,092% no TST 2024. Provisões possivelmente underfunded.',
   },
 
   // ═══════════════════════════════════════
@@ -706,19 +714,19 @@ export const companies = [
     name: 'AeC',
     sector: 'services',
     segment: 'Services',
-    employees: 45000,
+    employees: 30000,  // estimated from R$2B revenue + labor intensity
     headquarters: 'Belo Horizonte, MG',
     states: ['MG', 'SP', 'BA', 'PE', 'PB', 'SE', 'CE'],
     cargoDiversity: 4,
     multiState: 8,
-    unionActivity: 5,
-    operationalRatio: 0.92,
+    unionActivity: 6,  // ↑ primeira mobilização coletiva formal em 2025; SINTELMARK
+    operationalRatio: 0.90,
     seniorityVariance: 3,
-    recentLayoffs: 4,
+    recentLayoffs: 5,
     mAndA: 3,
-    restructuring: 3,
+    restructuring: 4,  // ↑ documented CLT violations: Art. 386 (women scheduled every Sunday)
     privatization: 0,
-    notes: 'Call center / BPO. Rotatividade extrema (~60% ao ano), alto volume de ações por hora extra, DORT/LER, assédio moral. Uma das maiores geradoras de contencioso trabalhista do Brasil.',
+    notes: 'Call center #1 para volume TST. Violações documentadas: Art. 386 CLT, recusa a assinar rescisão. Primeira negociação coletiva formal 2025. TRT CG (PB) ação de demissão em massa. DORT/LER endêmico.',
   },
 ];
 
