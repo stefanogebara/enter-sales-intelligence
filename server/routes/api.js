@@ -121,6 +121,33 @@ router.post('/pitch', async (req, res) => {
   }
 });
 
+// POST /api/warm — pre-warm cache for top N companies (for demo)
+router.post('/warm', async (req, res) => {
+  const { count = 3 } = req.body;
+  const scored = companies
+    .map((c) => ({ ...c, score: calculateScore(c) }))
+    .sort((a, b) => b.score.total - a.score.total)
+    .slice(0, count);
+
+  res.json({ message: `Warming ${scored.length} companies...`, companies: scored.map((c) => c.name) });
+
+  // Run in background (response already sent)
+  for (const company of scored) {
+    const cacheKey = `${company.id}:qualify`;
+    if (getCached(cacheKey)) continue;
+    try {
+      const { system, user } = qualificationPrompt(company);
+      const text = await callClaude(system, user);
+      setCache(cacheKey, text);
+      console.log(`Warmed: ${company.name} (qualify)`);
+    } catch (err) {
+      console.error(`Warm failed for ${company.name}:`, err.message);
+    }
+    // 3s delay between calls to avoid rate limiting
+    await new Promise((r) => setTimeout(r, 3000));
+  }
+});
+
 // GET /api/cache/status — check what's cached (for demo)
 router.get('/cache/status', (_req, res) => {
   const entries = [];
