@@ -1,0 +1,20 @@
+import 'dotenv/config';
+import express from 'express';
+import cors from 'cors';
+import apiRoutes from './routes/api.js';
+
+const app = express();
+const PORT = process.env.PORT || 3001;
+
+if (!process.env.ANTHROPIC_API_KEY) {
+  console.error('ANTHROPIC_API_KEY is required. Create a .env file with your key.');
+  process.exit(1);
+}
+
+app.use(cors({ origin: 'http://localhost:3000' }));
+app.use(express.json());
+app.use('/api', apiRoutes);
+
+app.listen(PORT, () => {
+  console.log(`Server running on http://localhost:${PORT}`);
+});
