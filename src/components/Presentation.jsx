@@ -279,13 +279,13 @@ function PitchSlide() {
     <div>
       <p className="font-mono text-label uppercase text-enter-gold mb-8">Resposta · Pitch CFO</p>
       <h2 className="text-title-md text-enter-white mb-2">
-        Para <span className="text-enter-gold">Murillo</span>, CFO do Bradesco
+        Para o <span className="text-enter-gold">CFO do Bradesco</span>
       </h2>
       <p className="text-caption text-enter-gray-600 mb-8">3 parágrafos · tom executivo · cria urgência</p>
 
       <div className="space-y-6 max-w-3xl">
         <p className="text-body-lg text-enter-gray-300 leading-relaxed">
-          Murillo, a reestruturação que o Bradesco está conduzindo — 2.200 desligamentos, 390 agências fechadas e um PDV ativo — é estrategicamente necessária,
+          A reestruturação que o Bradesco está conduzindo — 2.200 desligamentos, 390 agências fechadas e um PDV ativo — é estrategicamente necessária,
           mas vai gerar uma onda de processos trabalhistas nos próximos 12 a 18 meses. Com ~8.400 novos casos por ano e um custo estimado de R$250M+ anuais em
           contencioso trabalhista, a pergunta não é se o volume vai crescer, mas se vocês vão gerenciar esse crescimento com a mesma estrutura fragmentada de hoje.
         </p>
@@ -298,7 +298,7 @@ function PitchSlide() {
         <p className="text-body-lg text-enter-gray-300 leading-relaxed">
           O timing é agora. Os processos das demissões de 2024 vão começar a chegar no TRT nos próximos meses. Montar essa operação depois que o volume
           explodir custa 3x mais do que antecipar. Vocês já são clientes Enter — a integração é rápida e o time jurídico já conhece a plataforma.
-          Posso te mostrar uma simulação com os números reais do Bradesco essa semana?
+          Podemos mostrar uma simulação com os números reais do Bradesco essa semana.
         </p>
       </div>
     </div>
