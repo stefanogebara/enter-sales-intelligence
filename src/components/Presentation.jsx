@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { ChevronRight, ChevronLeft, ArrowRight } from 'lucide-react';
 import { companies } from '../data/companies';
 
-const SLIDES = [HeroSlide, ProblemSlide, OpportunitySlide, ScoreSlide, WhatItDoes, PipelineSlide];
+const SLIDES = [HeroSlide, ProblemSlide, OpportunitySlide, ScoreSlide, PrioritizationSlide, DiscoverySlide, PitchSlide, WhatItDoes, PipelineSlide];
 
 export default function Presentation({ onEnterPlatform }) {
   const [slide, setSlide] = useState(0);
@@ -202,7 +202,110 @@ function ScoreSlide() {
   );
 }
 
-// ─── 5. O QUE A PLATAFORMA FAZ ───
+// ─── 5. PRIORIZAÇÃO (resposta direta do case) ───
+function PrioritizationSlide() {
+  const top5 = companies.slice(0, 5);
+  return (
+    <div>
+      <p className="font-mono text-label uppercase text-enter-gold mb-12">Resposta · Priorização</p>
+      <h2 className="text-title-lg text-enter-white mb-12">
+        Top 5 empresas para<br />
+        <span className="text-enter-gold">atacar primeiro</span>
+      </h2>
+
+      <div className="space-y-4">
+        {top5.map((c, i) => (
+          <div key={c.id} className="flex items-center gap-6 border-b border-enter-gray-800 pb-4">
+            <span className="font-mono text-title-sm text-enter-gray-600 w-10">{String(i + 1).padStart(2, '0')}</span>
+            <div className="flex-1">
+              <div className="flex items-baseline gap-3">
+                <span className="text-title-sm text-enter-white">{c.name}</span>
+                <span className="text-body-lg text-enter-gray-500">{c.segment}</span>
+              </div>
+              <p className="text-body-lg text-enter-gray-400 mt-1">
+                {c.employees.toLocaleString('pt-BR')} func. · ~{c.score.estimatedCases.toLocaleString('pt-BR')} casos/ano · ARR est.{' '}
+                <span className="text-enter-gold font-mono">US${(c.score.estimatedARR / 1000).toFixed(0)}k</span>
+              </p>
+            </div>
+            <span className="font-mono text-title-md text-enter-white">{c.score.total}</span>
+          </div>
+        ))}
+      </div>
+
+      <p className="text-body-lg text-enter-gray-500 mt-8">
+        <span className="text-enter-white">Por que esses?</span>{' '}
+        Maior volume de funcionários × setores com mais processos × eventos recentes (demissões, reestruturação).
+        O Bradesco é #1 pela combinação de 84 mil funcionários + 2.200 demissões em 2024 + sindicato muito ativo.
+      </p>
+    </div>
+  );
+}
+
+// ─── 6. DISCOVERY (resposta direta do case) ───
+function DiscoverySlide() {
+  return (
+    <div>
+      <p className="font-mono text-label uppercase text-enter-gold mb-8">Resposta · Discovery</p>
+      <h2 className="text-title-md text-enter-white mb-8">
+        Roteiro para o <span className="text-enter-gold">Bradesco</span>
+        <span className="text-body-lg text-enter-gray-500 ml-3">(cliente #1)</span>
+      </h2>
+
+      <div className="grid grid-cols-2 gap-x-12 gap-y-6">
+        <QBlock cat="Dor" color="text-orange-400" questions={[
+          'Com 2.200 demissões e 390 agências fechadas no último ano, como está o volume de novos processos trabalhistas? A equipe jurídica está conseguindo absorver?',
+          'Quanto o Bradesco gasta por ano com contencioso trabalhista? Esse número tem crescido?',
+        ]} />
+        <QBlock cat="Processo" color="text-blue-400" questions={[
+          'Como funciona hoje a gestão dos escritórios de advocacia externos? Existe um sistema centralizado ou cada escritório reporta separado?',
+          'Na hora de decidir se faz acordo ou briga no processo, como é feito? Tem algum critério ou cada caso é decidido individualmente?',
+        ]} />
+        <QBlock cat="Budget" color="text-enter-gold" questions={[
+          'Existe uma meta de redução de custo de litígio ou é tratado como custo fixo? O board pressiona por eficiência nessa área?',
+          'Se eu te mostrasse uma forma de reduzir 30% do custo por processo, com dados auditáveis, quanto isso representaria em reais por ano?',
+        ]} />
+        <QBlock cat="Decisão" color="text-verdict-qualified" questions={[
+          'Quem decide a contratação de uma solução de gestão de contencioso trabalhista? É o jurídico, o CFO, ou os dois juntos?',
+          'Vocês já usam a Enter no consumerista — o que precisaria acontecer para expandir para o trabalhista?',
+        ]} />
+      </div>
+    </div>
+  );
+}
+
+// ─── 7. PITCH (resposta direta do case) ───
+function PitchSlide() {
+  return (
+    <div>
+      <p className="font-mono text-label uppercase text-enter-gold mb-8">Resposta · Pitch CFO</p>
+      <h2 className="text-title-md text-enter-white mb-2">
+        Para <span className="text-enter-gold">Murillo</span>, CFO do Bradesco
+      </h2>
+      <p className="text-caption text-enter-gray-600 mb-8">3 parágrafos · tom executivo · cria urgência</p>
+
+      <div className="space-y-6 max-w-3xl">
+        <p className="text-body-lg text-enter-gray-300 leading-relaxed">
+          Murillo, a reestruturação que o Bradesco está conduzindo — 2.200 desligamentos, 390 agências fechadas e um PDV ativo — é estrategicamente necessária,
+          mas vai gerar uma onda de processos trabalhistas nos próximos 12 a 18 meses. Com ~8.400 novos casos por ano e um custo estimado de R$250M+ anuais em
+          contencioso trabalhista, a pergunta não é se o volume vai crescer, mas se vocês vão gerenciar esse crescimento com a mesma estrutura fragmentada de hoje.
+        </p>
+        <p className="text-body-lg text-enter-gray-300 leading-relaxed">
+          A Enter já provou o que faz no consumerista de vocês. No trabalhista, a mesma tecnologia — IA que analisa documentos, detecta fraude, gera
+          contestações e recomenda acordos — pode reduzir o custo por processo em 30% e centralizar a gestão de todos os escritórios numa plataforma única.
+          Pares do setor que já adotaram esse modelo reportam redução de 25% na surpresa de provisão, o delta entre o que foi reservado e o que foi
+          efetivamente pago. Isso libera capital do balanço.
+        </p>
+        <p className="text-body-lg text-enter-gray-300 leading-relaxed">
+          O timing é agora. Os processos das demissões de 2024 vão começar a chegar no TRT nos próximos meses. Montar essa operação depois que o volume
+          explodir custa 3x mais do que antecipar. Vocês já são clientes Enter — a integração é rápida e o time jurídico já conhece a plataforma.
+          Posso te mostrar uma simulação com os números reais do Bradesco essa semana?
+        </p>
+      </div>
+    </div>
+  );
+}
+
+// ─── 8. O QUE A PLATAFORMA FAZ ───
 function WhatItDoes() {
   return (
     <div>
@@ -297,6 +400,19 @@ function Dimension({ pct, title, color, desc, lines }) {
       <div className="space-y-1.5">
         {lines.map((l, i) => (
           <p key={i} className="text-body-lg text-enter-gray-400">— {l}</p>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function QBlock({ cat, color, questions }) {
+  return (
+    <div>
+      <p className={`font-mono text-label uppercase ${color} mb-3`}>{cat}</p>
+      <div className="space-y-3">
+        {questions.map((q, i) => (
+          <p key={i} className="text-body-lg text-enter-gray-400 leading-relaxed">"{q}"</p>
         ))}
       </div>
     </div>
