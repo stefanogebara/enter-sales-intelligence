@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { companies, getCompanyById } from '../lib/companies.js';
 import { calculateScore } from '../lib/scoring.js';
-import { callClaude } from '../lib/claude.js';
+import { callWithSearch, callGenerate, callClaude } from '../lib/claude.js';
 import { qualificationPrompt, discoveryPrompt, pitchPrompt } from '../lib/prompts.js';
 
 const router = Router();
@@ -81,7 +81,7 @@ router.post('/discovery', async (req, res) => {
     const qualData = getCached(`${companyId}:qualify`) || '';
     const enriched = { ...company, score: calculateScore(company) };
     const { system, user } = discoveryPrompt(enriched, qualData);
-    const text = await callClaude(system, user);
+    const text = await callGenerate(system, user);  // Claude Sonnet — no web search needed
 
     setCache(cacheKey, text);
     res.json({ text });
@@ -109,7 +109,7 @@ router.post('/pitch', async (req, res) => {
     const qualData = getCached(`${companyId}:qualify`) || '';
     const enriched = { ...company, score: calculateScore(company) };
     const { system, user } = pitchPrompt(enriched, qualData);
-    const text = await callClaude(system, user);
+    const text = await callGenerate(system, user);  // Claude Sonnet — no web search needed
 
     setCache(cacheKey, text);
     res.json({ text });

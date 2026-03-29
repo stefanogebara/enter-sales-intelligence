@@ -6,8 +6,8 @@ import apiRoutes from './routes/api.js';
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-if (!process.env.ANTHROPIC_API_KEY) {
-  console.error('ANTHROPIC_API_KEY is required. Create a .env file with your key.');
+if (!process.env.OPENROUTER_API_KEY) {
+  console.error('OPENROUTER_API_KEY is required. Create a .env file with your key.');
   process.exit(1);
 }
 
@@ -23,5 +23,6 @@ app.use((err, _req, res, _next) => {
 
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
-  console.log(`API key: ${process.env.ANTHROPIC_API_KEY.substring(0, 10)}...`);
+  console.log(`OpenRouter key: ${process.env.OPENROUTER_API_KEY.substring(0, 15)}...`);
+  console.log('Models: perplexity/sonar-pro (search) + anthropic/claude-sonnet-4-6 (generate)');
 });
