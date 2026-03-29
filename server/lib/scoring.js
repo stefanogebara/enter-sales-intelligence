@@ -1,105 +1,74 @@
 /**
- * Composite Labor Litigation Risk Score
+ * Composite Labor Litigation Risk Score — v2 (Karpathy-calibrated)
  *
  * Score = Volume (30%) + Complexity (40%) + Timing (30%)
  *
- * Data sources:
- *  - CNJ Justiça em Números 2025 (year-base 2024)
- *  - TST Relatório Geral / Ranking das Partes
- *  - DIEESE Desempenho dos Bancos 2023
- *  - CAGED/RAIS sector turnover data
- *  - IMF WP 2025/063 — Labor Litigation and Productivity in Brazil
+ * CALIBRATED WITH REAL DATA:
+ *  - TST Ranking das Partes (Fev/2026): Bradesco 716/mês, Itaú 600/mês, Santander 588/mês
+ *  - Vivo: 12,000 casos/ano (~1,000/mês) — Revista Veja
+ *  - Bradesco: 48,192 casos em 5 anos (Berton Bortolotto/jurimetria)
+ *  - Magalu: R$173M provisão trabalhista (Formulário Referência 2025)
+ *  - CNJ 2025: 2.4M novos/ano, R$50.6B pagos
  *
- * Key national stats (2024-2025):
- *  - 2.4M new 1st-instance labor cases/year
- *  - R$50.6B total paid by employers (2025, record)
- *  - 79-88% employee success rate (partial + full + settlement)
- *  - Average settlement: ~R$24,000
- *  - Top 100 companies: avg 4,315 cases each (13.6% of all cases)
+ * METHODOLOGY:
+ *  TST ranking shows cases at supreme labor court level only.
+ *  Total cases across all instances ≈ TST × 5-10x.
+ *  We use "cases per 1,000 employees per year" anchored on real data.
  */
 
-// Sector turnover rates (annual, Brazil)
-// Sources: DIEESE 2023, CAGED PDET, IMF WP 2025/063
-// Banking: 57.8% of separations employer-initiated (DIEESE)
-// Call centers: 30-45% annual, 13-15% monthly in SP (DIEESE/academic)
-// National average: 51.3% (CAGED 2024)
+// Calibrated sector litigation rates (cases/1,000 employees/year, ALL instances)
+// Anchor: Bradesco ~9,600/yr ÷ 84k = 114/1k; Vivo 12,000/yr ÷ 33k = 364/1k
+// These include cases where company is defendant as tomadora (outsourcing)
+const SECTOR_LITIGATION_RATE = {
+  financial_services: 100,  // Bradesco: 114, Itaú: 75 (TST level), avg ~100
+  tech: 8,                  // low volume, mostly white-collar
+  retail: 25,               // high turnover but lower per-capita than banks
+  airlines: 35,             // complex aviation law, strong unions
+  telecom: 200,             // VERY HIGH — outsourcing subsidiária inflates (Vivo: 366)
+  healthcare: 20,           // insalubridade claims rising fast (+1,092% TST 2024)
+  utilities: 15,            // periculosidade, lower volume than telecom
+  services: 50,             // call center + facilities: high volume, lower value
+};
+
+// Sector turnover rates — DIEESE/CAGED
 const SECTOR_TURNOVER = {
-  financial_services: 0.25, // gross: 36k admissions + 42k separations on 280k base (DIEESE)
+  financial_services: 0.25,
   tech: 0.20,
-  retail: 0.35,             // highest business mortality rate (30.2%), "temporary passage" employment
-  airlines: 0.15,           // Azul pilot attrition 5.2% YTD 2025; ground crew higher
-  telecom: 0.18,            // consolidation-driven (Oi bankruptcy, TIM/Vivo restructuring)
-  healthcare: 0.20,         // nursing/technical roles, 12x36 shifts
-  utilities: 0.10,          // low for own employees, high for outsourced (not counted here)
-  services: 0.40,           // facilities/call center: among highest in Brazil
+  retail: 0.35,
+  airlines: 0.15,
+  telecom: 0.18,
+  healthcare: 0.20,
+  utilities: 0.10,
+  services: 0.40,
 };
 
-// Sector risk multiplier vs national average
-// Source: IMF WP 2025/063, MPT data, TST sector distribution
-// National: ~1 case per 29 employees. Banking: ~1 per 2 employees (TST/Anamatra)
-// CNJ 2024 sector share: Services 27.9%, Industry 20.6%, Commerce 13.1%
-const SECTOR_RISK_MULTIPLIER = {
-  financial_services: 12,  // 1 case per 2 employees (TST/MPT data)
-  tech: 2,                 // mostly white-collar, lower claim frequency
-  retail: 5,               // 1 case per 8-23 employees (MPT)
-  airlines: 8,             // complex aviation law, strong unions, regulated schedules
-  telecom: 5,              // outsourcing liability, restructuring waves
-  healthcare: 4,           // insalubridade (+1,092% at TST 2024), shift disputes
-  utilities: 4,            // periculosidade (30% premium), field work hazards
-  services: 10,            // call centers #1 for TST individual claim volume
-};
-
-// Estimated labor cases per 1,000 employees/year by sector
-// Derived from: TST ranking, CNJ sector distribution, DIEESE data
-// Banking: 4.3M total accumulated cases across 450-500k employees (Febraban)
-// National new cases: 2.4M/year across ~45M formal workers ≈ 53 per 1,000
-const CNJ_SECTOR_BENCHMARK = {
-  financial_services: 18,   // banking: ~500 per 1,000 accumulated; ~18/1,000/year new
-  tech: 3.5,
-  retail: 8.5,
-  airlines: 12,
-  telecom: 7,
-  healthcare: 5,
-  utilities: 4,
-  services: 15,             // call center/facilities: highest individual claim frequency
-};
-
-// Average cost per labor case (BRL) by sector
-// Source: TST 2025 — R$50.6B / 2.3M cases ≈ R$22,000 blended average
-// Banking sector: higher (overtime 7th/8th hour, moral damages)
-// Call center: lower per case but very high volume
+// Average cost per case (BRL) — derived from R$50.6B / 2.4M national avg = R$21k
 const AVG_CASE_COST_BRL = {
-  financial_services: 35000,  // overtime 7th/8th hour + moral damages
-  tech: 28000,
-  retail: 22000,              // severance disputes, overtime
-  airlines: 45000,            // complex crew schedule disputes, higher salaries
-  telecom: 30000,             // outsourcing liability chains
-  healthcare: 28000,          // insalubridade + shift disputes
-  utilities: 38000,           // periculosidade premium + field accidents
-  services: 18000,            // high volume but lower per-case value
+  financial_services: 30000,
+  tech: 25000,
+  retail: 18000,
+  airlines: 40000,
+  telecom: 22000,
+  healthcare: 25000,
+  utilities: 35000,
+  services: 15000,
 };
 
-function clamp(val, min, max) {
-  return Math.max(min, Math.min(max, val));
-}
-
-function normalize(val, min, max) {
-  if (max === min) return 0;
-  return clamp(((val - min) / (max - min)) * 100, 0, 100);
-}
+function clamp(v, lo, hi) { return Math.max(lo, Math.min(hi, v)); }
+function norm(v, lo, hi) { return hi === lo ? 0 : clamp(((v - lo) / (hi - lo)) * 100, 0, 100); }
 
 export function calculateScore(company) {
+  const litRate = SECTOR_LITIGATION_RATE[company.sector] || 25;
   const turnover = SECTOR_TURNOVER[company.sector] || 0.20;
-  const riskMult = SECTOR_RISK_MULTIPLIER[company.sector] || 3;
-  const cnjRate = CNJ_SECTOR_BENCHMARK[company.sector] || 5.0;
-  const avgCaseCost = AVG_CASE_COST_BRL[company.sector] || 25000;
+  const avgCost = AVG_CASE_COST_BRL[company.sector] || 22000;
 
   // --- Volume (30%) ---
-  const annualSeparations = company.employees * turnover;
-  const estimatedCases = (company.employees / 1000) * cnjRate;
-  const estimatedAnnualCost = estimatedCases * avgCaseCost;
-  // Volume: log scale normalized. 100 = 50k+ employees with high turnover
-  const volumeRaw = normalize(Math.log10(annualSeparations + 1), 1, 4.5);
+  const estimatedCases = Math.round((company.employees / 1000) * litRate);
+  const estimatedAnnualCost = estimatedCases * avgCost;
+  const annualSeparations = Math.round(company.employees * turnover);
+
+  // Log scale: 10 cases = low, 10,000+ = max
+  const volumeRaw = norm(Math.log10(Math.max(estimatedCases, 1)), 1, 4);
 
   // --- Complexity (40%) ---
   const complexityFactors = {
@@ -110,7 +79,7 @@ export function calculateScore(company) {
     seniorityVariance: company.seniorityVariance || 5,
   };
   const complexitySum = Object.values(complexityFactors).reduce((a, b) => a + b, 0);
-  const complexityRaw = normalize(complexitySum, 0, 50);
+  const complexityRaw = norm(complexitySum, 0, 50);
 
   // --- Timing (30%) ---
   const timingFactors = {
@@ -119,10 +88,9 @@ export function calculateScore(company) {
     restructuring: company.restructuring || 0,
     privatization: company.privatization || 0,
   };
-  const timingMax = Math.max(...Object.values(timingFactors));
-  const timingAvg =
-    Object.values(timingFactors).reduce((a, b) => a + b, 0) / 4;
-  const timingRaw = normalize(timingMax * 0.7 + timingAvg * 0.3, 0, 10);
+  const tmMax = Math.max(...Object.values(timingFactors));
+  const tmAvg = Object.values(timingFactors).reduce((a, b) => a + b, 0) / 4;
+  const timingRaw = norm(tmMax * 0.7 + tmAvg * 0.3, 0, 10);
 
   // --- Composite ---
   const total = Math.round(volumeRaw * 0.3 + complexityRaw * 0.4 + timingRaw * 0.3);
@@ -132,10 +100,12 @@ export function calculateScore(company) {
   else if (total >= 40) verdict = 'POTENTIAL';
   else verdict = 'NOT_QUALIFIED';
 
-  // Estimated ARR: Enter charges ~R$1,500/case managed (LPO benchmark)
-  // For qualification threshold: $500k/year ≈ R$2.75M
+  // ARR estimate: Enter avg contract ~R$4M (from investor data, ~15 clients ÷ ~R$60M ARR)
+  // Simplified: R$1,500/case managed (LPO benchmark)
+  // Qualification threshold: US$500k ≈ R$2.75M → need ~1,833 cases
   const estimatedARR_BRL = estimatedCases * 1500;
-  const estimatedARR = Math.round(estimatedARR_BRL / 5.5); // USD
+  const estimatedARR = Math.round(estimatedARR_BRL / 5.5);
+  const meetsARRThreshold = estimatedARR >= 500000;
 
   return {
     total,
@@ -143,17 +113,17 @@ export function calculateScore(company) {
     complexity: Math.round(complexityRaw),
     timing: Math.round(timingRaw),
     verdict,
-    estimatedCases: Math.round(estimatedCases),
+    estimatedCases,
     estimatedAnnualCostBRL: Math.round(estimatedAnnualCost),
     estimatedARR,
-    annualSeparations: Math.round(annualSeparations),
+    meetsARRThreshold,
+    annualSeparations,
     turnoverRate: turnover,
-    cnjRate,
-    avgCaseCost,
-    sectorRiskMultiplier: riskMult,
+    litigationRate: litRate,
+    avgCaseCost: avgCost,
     complexityFactors,
     timingFactors,
   };
 }
 
-export { SECTOR_TURNOVER, SECTOR_RISK_MULTIPLIER, CNJ_SECTOR_BENCHMARK, AVG_CASE_COST_BRL };
+export { SECTOR_LITIGATION_RATE, SECTOR_TURNOVER, AVG_CASE_COST_BRL };

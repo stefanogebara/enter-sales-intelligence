@@ -4,37 +4,34 @@
  * Deep analysis via Claude API will override these with real-time data.
  */
 
-// Inline scoring logic (mirrors server/lib/scoring.js)
-// Mirrors server/lib/scoring.js — updated with real CNJ/TST/DIEESE data
+// Mirrors server/lib/scoring.js v2 (Karpathy-calibrated with TST Ranking data)
+const SECTOR_LIT_RATE = {
+  financial_services: 100, tech: 8, retail: 25,
+  airlines: 35, telecom: 200, healthcare: 20,
+  utilities: 15, services: 50,
+};
 const SECTOR_TURNOVER = {
   financial_services: 0.25, tech: 0.20, retail: 0.35,
   airlines: 0.15, telecom: 0.18, healthcare: 0.20,
   utilities: 0.10, services: 0.40,
 };
-
-const CNJ_SECTOR_BENCHMARK = {
-  financial_services: 18, tech: 3.5, retail: 8.5,
-  airlines: 12, telecom: 7, healthcare: 5,
-  utilities: 4, services: 15,
-};
-
-const AVG_CASE_COST_BRL = {
-  financial_services: 35000, tech: 28000, retail: 22000,
-  airlines: 45000, telecom: 30000, healthcare: 28000,
-  utilities: 38000, services: 18000,
+const AVG_CASE_COST = {
+  financial_services: 30000, tech: 25000, retail: 18000,
+  airlines: 40000, telecom: 22000, healthcare: 25000,
+  utilities: 35000, services: 15000,
 };
 
 function clamp(v, lo, hi) { return Math.max(lo, Math.min(hi, v)); }
 function norm(v, lo, hi) { return hi === lo ? 0 : clamp(((v - lo) / (hi - lo)) * 100, 0, 100); }
 
 function calcScore(c) {
-  const t = SECTOR_TURNOVER[c.sector] || 0.15;
-  const cnjR = CNJ_SECTOR_BENCHMARK[c.sector] || 3.0;
-  const avgC = AVG_CASE_COST_BRL[c.sector] || 35000;
-  const sep = c.employees * t;
-  const cases = (c.employees / 1000) * cnjR;
+  const litR = SECTOR_LIT_RATE[c.sector] || 25;
+  const t = SECTOR_TURNOVER[c.sector] || 0.20;
+  const avgC = AVG_CASE_COST[c.sector] || 22000;
+  const cases = Math.round((c.employees / 1000) * litR);
   const annCost = cases * avgC;
-  const volRaw = norm(Math.log10(sep + 1), 1, 4.5);
+  const sep = Math.round(c.employees * t);
+  const volRaw = norm(Math.log10(Math.max(cases, 1)), 1, 4);
   const cxFactors = {
     cargoDiversity: c.cargoDiversity || 5,
     multiState: c.multiState || 5,
@@ -58,14 +55,16 @@ function calcScore(c) {
   if (total >= 65) verdict = 'QUALIFIED';
   else if (total >= 40) verdict = 'POTENTIAL';
   else verdict = 'NOT_QUALIFIED';
+  const estARR = Math.round((cases * 1500) / 5.5);
   return {
     total, volume: Math.round(volRaw), complexity: Math.round(cxRaw),
     timing: Math.round(tmRaw), verdict,
-    estimatedCases: Math.round(cases),
-    estimatedAnnualCostBRL: Math.round(annCost),
-    estimatedARR: Math.round((cases * 1500) / 5.5),
-    annualSeparations: Math.round(sep),
-    turnoverRate: t, cnjRate: cnjR, avgCaseCost: avgC,
+    estimatedCases: cases,
+    estimatedAnnualCostBRL: annCost,
+    estimatedARR: estARR,
+    meetsARRThreshold: estARR >= 500000,
+    annualSeparations: sep,
+    turnoverRate: t, litigationRate: litR, avgCaseCost: avgC,
     complexityFactors: cxFactors, timingFactors: tmFactors,
   };
 }

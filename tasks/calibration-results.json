@@ -1,0 +1,182 @@
+[
+  {
+    "id": "hapvida",
+    "name": "Hapvida",
+    "ourEstimate": {
+      "employees": 69000,
+      "estimatedCases": 345,
+      "estimatedCostBRL": 9660000,
+      "score": 88,
+      "verdict": "QUALIFIED"
+    },
+    "realData": "1. **PROCESSOS_ATIVOS**: NÃO ENCONTRADO  \n2. **NOVOS_CASOS_ANO**: NÃO ENCONTRADO  \n3. **PROVISAO_TRABALHISTA_BRL**: NÃO ENCONTRADO  \n4. **FUNCIONARIOS_REAL**: NÃO ENCONTRADO  \n5. **LAYOFFS_RECENTES**: NÃO ENCONTRADO  \n6. **CUSTO_MEDIO_CASO**: NÃO ENCONTRADO  \n7. **SINDICATO_ATIVO**: NÃO ENCONTRADO  \n8. **FONTE_PRINCIPAL**: https://prt21.mpt.mp.br/procuradorias/prt-natal/487-hapvida-e-obrigada-a-regularizar-jornada-de-seus-empregados (caso de 2019 sobre jornada de trabalho, sem dados quantitativos solicitados)[1]"
+  },
+  {
+    "id": "bradesco",
+    "name": "Bradesco",
+    "ourEstimate": {
+      "employees": 84022,
+      "estimatedCases": 1512,
+      "estimatedCostBRL": 52933860,
+      "score": 86,
+      "verdict": "QUALIFIED"
+    },
+    "realData": "1. PROCESSOS_ATIVOS: NÃO ENCONTRADO (CEO citou 42 mil em 2023[1][4]; TST: 7.500 no TST em 2024[2]; últimos 5 anos: 48.192 totais[1])  \n2. NOVOS_CASOS_ANO: NÃO ENCONTRADO  \n3. PROVISAO_TRABALHISTA_BRL: NÃO ENCONTRADO  \n4. FUNCIONARIOS_REAL: NÃO ENCONTRADO  \n5. LAYOFFS_RECENTES: NÃO ENCONTRADO  \n6. CUSTO_MEDIO_CASO: NÃO ENCONTRADO  \n7. SINDICATO_ATIVO: NÃO ENCONTRADO  \n8. FONTE_PRINCIPAL: https://bertonbortolotto.com.br/alem-dos-numeros-jurimetria-revela-detalhes-dos-processos-do-bradesco/ (dados TST, 48.192 processos em 5 anos)[1]"
+  },
+  {
+    "id": "itau",
+    "name": "Itaú Unibanco",
+    "ourEstimate": {
+      "employees": 96219,
+      "estimatedCases": 1732,
+      "estimatedCostBRL": 60617970,
+      "score": 84,
+      "verdict": "QUALIFIED"
+    },
+    "realData": "1. PROCESSOS_ATIVOS: NÃO ENCONTRADO  \n2. NOVOS_CASOS_ANO: NÃO ENCONTRADO  \n3. PROVISAO_TRABALHISTA_BRL: NÃO ENCONTRADO  \n4. FUNCIONARIOS_REAL: NÃO ENCONTRADO  \n5. LAYOFFS_RECENTES: NÃO ENCONTRADO  \n6. CUSTO_MEDIO_CASO: NÃO ENCONTRADO  \n7. SINDICATO_ATIVO: NÃO ENCONTRADO  \n8. FONTE_PRINCIPAL: https://anjosramos.com.br/blog/5-bancos-enfrentam-44-milhoes-de-processos-trabalhistas/ (menciona setor bancário com 4,3 milhões de processos, sem dados específicos do Itaú)[6]"
+  },
+  {
+    "id": "azul",
+    "name": "Azul Linhas Aéreas",
+    "ourEstimate": {
+      "employees": 15400,
+      "estimatedCases": 185,
+      "estimatedCostBRL": 8316000,
+      "score": 80,
+      "verdict": "QUALIFIED"
+    },
+    "realData": "1. **PROCESSOS_ATIVOS**: NÃO ENCONTRADO  \n2. **NOVOS_CASOS_ANO**: NÃO ENCONTRADO  \n3. **PROVISAO_TRABALHISTA_BRL**: NÃO ENCONTRADO  \n4. **FUNCIONARIOS_REAL**: NÃO ENCONTRADO  \n5. **LAYOFFS_RECENTES**: NÃO ENCONTRADO  \n6. **CUSTO_MEDIO_CASO**: NÃO ENCONTRADO  \n7. **SINDICATO_ATIVO**: SNA (Sindicato Nacional dos Aeronautas) - ação coletiva ativa em 2024 contra Azul por escalas publicadas vs. realizadas, com recurso acatado pelo TST em março/2024[4] (https://www.aeronautas.org.br/tst-acata-recurso-do-sna-e-acao-coletiva-contra-a-azul-por-escalas-publicadas-x-realizadas-retorna-a-primeira-instancia/)  \n8. **FONTE_PRINCIPAL**: https://www.aeronautas.org.br/tst-acata-recurso-do-sna-e-acao-coletiva-contra-a-azul-por-escalas-publicadas-x-realizadas-retorna-a-primeira-instancia/ (TST/SNA, 2024)"
+  },
+  {
+    "id": "latam",
+    "name": "LATAM Airlines Brasil",
+    "ourEstimate": {
+      "employees": 22500,
+      "estimatedCases": 270,
+      "estimatedCostBRL": 12150000,
+      "score": 79,
+      "verdict": "QUALIFIED"
+    },
+    "realData": "1. PROCESSOS_ATIVOS: NÃO ENCONTRADO  \n2. NOVOS_CASOS_ANO: NÃO ENCONTRADO  \n3. PROVISAO_TRABALHISTA_BRL: NÃO ENCONTRADO  \n4. FUNCIONARIOS_REAL: NÃO ENCONTRADO  \n5. LAYOFFS_RECENTES: 44 funcionários demitidos em Viracopos (SP) em setembro/outubro de 2015 (sem negociação prévia com sindicato); 34 funcionários demitidos em junho de 2020 devido à pandemia[2]  \n6. CUSTO_MEDIO_CASO: NÃO ENCONTRADO  \n7. SINDICATO_ATIVO: NÃO ENCONTRADO (mencionado sindicato da categoria em caso de 2015, sem nome específico)[2]  \n8. FONTE_PRINCIPAL: https://advocaciaborges.com.br/trt-15-ve-abuso-e-condena-latam-a-pagar-r-500-mil-de-indenizacao-por-demissoes-em-viracopos-sem-negociacao-previa/ (TRT-15, caso de demissões)[2]"
+  },
+  {
+    "id": "santander",
+    "name": "Santander Brasil",
+    "ourEstimate": {
+      "employees": 55646,
+      "estimatedCases": 1002,
+      "estimatedCostBRL": 35056980,
+      "score": 76,
+      "verdict": "QUALIFIED"
+    },
+    "realData": "# Dados Reais e Recentes sobre Processos Trabalhistas - Santander Brasil\n\nCom base nos resultados de busca disponíveis, apresento os dados factuais encontrados:\n\n**1. PROCESSOS_ATIVOS:** NÃO ENCONTRADO - Os resultados não contêm informações sobre o número total de processos ativos no TST Ranking das Partes ou CNJ.\n\n**2. NOVOS_CASOS_ANO:** NÃO ENCONTRADO - Dados específicos sobre novos processos por ano não estão disponíveis nos resultados.\n\n**3. PROVISAO_TRABALHISTA_BRL:** NÃO ENCONTRADO - Nenhum balanço ou resultado trimestral/anual do Santander com informações sobre provisões trabalhistas foi encontrado.\n\n**4. FUNCIONARIOS_REAL:** NÃO ENCONTRADO - O número de funcionários não consta nos resultados de busca.\n\n**5. LAYOFFS_RECENTES:** NÃO ENCONTRADO - Os resultados não documentam demissões em massa nos últimos 2 anos com números específicos.\n\n**6. CUSTO_MEDIO_CASO:** Parcialmente disponível - Em 2025, o TST realizou **57 audiências de conciliação com o Santander**, resultando em **21 acordos homologados no total de R$ 4.800.000**[3], o que representa aproximadamente **R$ 228.571 por acordo** neste período específico.\n\n**7. SINDICATO_ATIVO:** **Sindicato dos Empregados em Estabelecimentos Bancários da Paraíba**[5] - Mantém atividade recente, comprovada pela ação civil pública movida contra o banco pela condenação de R$ 500 mil em danos morais (2025).\n\n**8. FONTE_PRINCIPAL:** Tribunal Superior do Trabalho (TST) - https://www.tst.jus.br - é a fonte mais confiável, seguida por jurisprudência documentada no Migalhas.\n\n**Dados factuais confirmados:**\n- TST e Santander firmaram **Termo de Cooperação Judiciária em 08/08/2025** para fomentar soluções consensuais[1][3]\n- O banco foi **condenado a pagar R$ 500 mil por dano moral coletivo** por manter bancários reintegrados isolados em sala chamada \"aquário\"[5]"
+  },
+  {
+    "id": "vivo",
+    "name": "Vivo (Telefônica Brasil)",
+    "ourEstimate": {
+      "employees": 33000,
+      "estimatedCases": 231,
+      "estimatedCostBRL": 6930000,
+      "score": 75,
+      "verdict": "QUALIFIED"
+    },
+    "realData": "Baseado nos resultados de busca fornecidos, aqui estão os dados concretos encontrados:\n\n**1. PROCESSOS_ATIVOS:** Mais de 30 mil processos trabalhistas[3]\n\n**2. NOVOS_CASOS_ANO:** Aproximadamente mil novos processos por mês (cerca de 12 mil por ano)[3]\n\n**3. PROVISAO_TRABALHISTA_BRL:** NÃO ENCONTRADO\n\n**4. FUNCIONARIOS_REAL:** NÃO ENCONTRADO\n\n**5. LAYOFFS_RECENTES:** NÃO ENCONTRADO\n\n**6. CUSTO_MEDIO_CASO:** NÃO ENCONTRADO\n\n**7. SINDICATO_ATIVO:** NÃO ENCONTRADO\n\n**8. FONTE_PRINCIPAL:** Revista Veja - Coluna Radar[3] (informação sobre terceirização dos processos trabalhistas)\n\n---\n\n**Observação importante:** Os resultados de busca fornecidos são limitados e não incluem dados de fontes oficiais como TST (Tribunal Superior do Trabalho), CNJ (Conselho Nacional de Justiça) ou CVM (Comissão de Valores Mobiliários). Para obter informações completas e verificadas sobre provisão trabalhista, número de funcionários e análises oficiais, seria necessário consultar diretamente:\n- Portal do TST (www.tst.jus.br) - Ranking das Partes\n- CNJ (www.cnj.jus.br) - Estatísticas judiciárias\n- Relatórios financeiros da Telefônica Brasil S.A. junto à CVM\n\nOs dados disponíveis nos resultados de busca atuais referem-se principalmente a casos trabalhistas específicos e à terceirização de processos pela empresa."
+  },
+  {
+    "id": "magalu",
+    "name": "Magazine Luiza",
+    "ourEstimate": {
+      "employees": 28000,
+      "estimatedCases": 238,
+      "estimatedCostBRL": 5236000,
+      "score": 72,
+      "verdict": "QUALIFIED"
+    },
+    "realData": "# Dados Jurídicos - Processos Trabalhistas Magazine Luiza\n\nCom base nos resultados de busca disponíveis, apresento os dados factuais encontrados:\n\n**1. PROCESSOS_ATIVOS**\nNÃO ENCONTRADO - Os resultados não fornecem número total de processos ativos no TST Ranking das Partes ou CNJ.\n\n**2. NOVOS_CASOS_ANO**\nNÃO ENCONTRADO - Dados sobre quantidade anual de novos processos não constam nos resultados.\n\n**3. PROVISAO_TRABALHISTA_BRL**\nValor total provisionado de processos não sigilosos relevantes: R$ 173 milhões[4] (conforme Formulário de Referência 2025, enviado em 13/01/2026). Detalhamento específico de provisões trabalhistas: NÃO ENCONTRADO.\n\n**4. FUNCIONARIOS_REAL**\nNÃO ENCONTRADO - Número de funcionários não consta nos resultados de busca.\n\n**5. LAYOFFS_RECENTES**\nNÃO ENCONTRADO - Dados sobre demissões em massa nos últimos 2 anos não foram encontrados.\n\n**6. CUSTO_MEDIO_CASO**\nNÃO ENCONTRADO - Custo médio por processo não é disponibilizado nos resultados.\n\n**7. SINDICATO_ATIVO**\nNÃO ENCONTRADO - Resultados mencionam \"convenção coletiva da categoria\" em violações trabalhistas[1], mas não identificam sindicato específico ou nível de atividade recente.\n\n**8. FONTE_PRINCIPAL**\n**Fontes confiáveis identificadas:**\n- Tribunal Regional do Trabalho (TRT) de Campinas e documentos do Ministério Público do Trabalho (MPT)[1]\n- Formulário de Referência 2025 da Magazine Luiza (CVM/empresa de capital aberto)[4]\n- Documentos do TST citados mas sem acesso direto ao Ranking das Partes\n\n**CASOS RECENTES DOCUMENTADOS:**\n- Condenação em primeira e segunda instâncias por dumping social - R$ 1,5 milhão de indenização por danos morais coletivos[1] (Processo nº 0001993-11.2011.5.15.0015)\n- Ação de execução de multa por descumprimento: R$ 5 milhões por manter jornadas irregulares após sentença condenatória[5] (Processo nº 0010912-03.2014.5.15.0041)"
+  },
+  {
+    "id": "mercado-livre",
+    "name": "Mercado Livre",
+    "ourEstimate": {
+      "employees": 33000,
+      "estimatedCases": 281,
+      "estimatedCostBRL": 6171000,
+      "score": 70,
+      "verdict": "QUALIFIED"
+    },
+    "realData": "1. **PROCESSOS_ATIVOS**: NÃO ENCONTRADO  \n2. **NOVOS_CASOS_ANO**: NÃO ENCONTRADO  \n3. **PROVISAO_TRABALHISTA_BRL**: NÃO ENCONTRADO  \n4. **FUNCIONARIOS_REAL**: NÃO ENCONTRADO  \n5. **LAYOFFS_RECENTES**: 38 demissões no Brasil em janeiro de 2026 (parte de 118 na América Latina); decisão judicial de reintegração por demissão em massa sem sindicato (1 caso reportado, com recurso possível) [https://reporterbrasil.org.br/2026/03/mercado-livre-silencio-demissao-abusivo/]  \n6. **CUSTO_MEDIO_CASO**: NÃO ENCONTRADO  \n7. **SINDICATO_ATIVO**: Sindpd-SP (Sindicato dos Trabalhadores em Tecnologia da Informação de São Paulo) - ativo em ações judiciais recentes (condenação mantida em 2025 por descumprimento de contratos coletivos); Sindpd-SC (mencionado em demissões) [https://fenati.org.br/trt-condenacao-milionaria-empresa-mercado-livre/]; [https://reporterbrasil.org.br/2026/03/mercado-livre-silencio-demissao-abusivo/]  \n8. **FONTE_PRINCIPAL**: https://www.tst.jus.br/-/mercado-livre-recebe-multa-por-sucessivos-recursos-para-ter-seu-caso-examinado-pelo-tst (TST oficial, decisão de 14/02/2025 sobre multa por recursos em caso trabalhista)"
+  },
+  {
+    "id": "tim",
+    "name": "TIM Brasil",
+    "ourEstimate": {
+      "employees": 10000,
+      "estimatedCases": 70,
+      "estimatedCostBRL": 2100000,
+      "score": 69,
+      "verdict": "QUALIFIED"
+    },
+    "realData": "1. PROCESSOS_ATIVOS: NÃO ENCONTRADO  \n2. NOVOS_CASOS_ANO: NÃO ENCONTRADO  \n3. PROVISAO_TRABALHISTA_BRL: NÃO ENCONTRADO  \n4. FUNCIONARIOS_REAL: NÃO ENCONTRADO  \n5. LAYOFFS_RECENTES: NÃO ENCONTRADO  \n6. CUSTO_MEDIO_CASO: NÃO ENCONTRADO  \n7. SINDICATO_ATIVO: NÃO ENCONTRADO  \n8. FONTE_PRINCIPAL: NÃO ENCONTRADO (resultados mencionam casos isolados no TST/STF, sem dados agregados: https://www.tst.jus.br/en/-/anuladas-decisoes-de-processo-contra-tim-celular-por-cerceamento-de-defesa [2], https://www.jota.info/stf/do-supremo/pejotizacao-stf-cassa-decisoes-trabalhistas-que-haviam-condenado-tim [3])"
+  },
+  {
+    "id": "energisa",
+    "name": "Energisa",
+    "ourEstimate": {
+      "employees": 18000,
+      "estimatedCases": 72,
+      "estimatedCostBRL": 2736000,
+      "score": 69,
+      "verdict": "QUALIFIED"
+    },
+    "realData": "1. PROCESSOS_ATIVOS: NÃO ENCONTRADO  \n2. NOVOS_CASOS_ANO: NÃO ENCONTRADO  \n3. PROVISAO_TRABALHISTA_BRL: NÃO ENCONTRADO  \n4. FUNCIONARIOS_REAL: NÃO ENCONTRADO  \n5. LAYOFFS_RECENTES: NÃO ENCONTRADO  \n6. CUSTO_MEDIO_CASO: NÃO ENCONTRADO  \n7. SINDICATO_ATIVO: NÃO ENCONTRADO  \n8. FONTE_PRINCIPAL: NÃO ENCONTRADO (resultados limitados a casos isolados sem dados agregados do TST, CNJ ou CVM; ver [1] https://www.prt15.mpt.mp.br/2-uncategorised/1898-justica-determina-que-energisa-cesse-discriminacao-contra-trabalhador-com-deficiencia para processo recente de discriminação)"
+  },
+  {
+    "id": "verzani-sandrini",
+    "name": "Verzani & Sandrini",
+    "ourEstimate": {
+      "employees": 45000,
+      "estimatedCases": 675,
+      "estimatedCostBRL": 12150000,
+      "score": 67,
+      "verdict": "QUALIFIED"
+    },
+    "realData": "1. **PROCESSOS_ATIVOS**: NÃO ENCONTRADO  \n2. **NOVOS_CASOS_ANO**: NÃO ENCONTRADO  \n3. **PROVISAO_TRABALHISTA_BRL**: NÃO ENCONTRADO  \n4. **FUNCIONARIOS_REAL**: NÃO ENCONTRADO  \n5. **LAYOFFS_RECENTES**: NÃO ENCONTRADO  \n6. **CUSTO_MEDIO_CASO**: NÃO ENCONTRADO  \n7. **SINDICATO_ATIVO**: NÃO ENCONTRADO  \n8. **FONTE_PRINCIPAL**: NÃO ENCONTRADO (resultados citam processos isolados em TRT2[1] e TRT15[5], sem agregados; sem dados de TST Ranking, CNJ ou CVM)"
+  },
+  {
+    "id": "aec",
+    "name": "AeC",
+    "ourEstimate": {
+      "employees": 30000,
+      "estimatedCases": 450,
+      "estimatedCostBRL": 8100000,
+      "score": 64,
+      "verdict": "POTENTIAL"
+    },
+    "realData": "1. PROCESSOS_ATIVOS: NÃO ENCONTRADO  \n2. NOVOS_CASOS_ANO: NÃO ENCONTRADO  \n3. PROVISAO_TRABALHISTA_BRL: NÃO ENCONTRADO  \n4. FUNCIONARIOS_REAL: 25.000 (nota da AeC em 2014)[1] - https://noticias.r7.com/empregos/tst-determina-indenizacao-de-r-10-mil-a-funcionaria-de-telemarketing-17092014/  \n5. LAYOFFS_RECENTES: NÃO ENCONTRADO  \n6. CUSTO_MEDIO_CASO: NÃO ENCONTRADO  \n7. SINDICATO_ATIVO: NÃO ENCONTRADO  \n8. FONTE_PRINCIPAL: TST Ranking das Partes (sem menção à AeC nos top rankings de 30/09/2025)[3] - https://www.tst.jus.br/en/web/estatistica/tst/ranking-das-partes"
+  },
+  {
+    "id": "sulamerica",
+    "name": "SulAmérica",
+    "ourEstimate": {
+      "employees": 5000,
+      "estimatedCases": 25,
+      "estimatedCostBRL": 700000,
+      "score": 60,
+      "verdict": "POTENTIAL"
+    },
+    "realData": "1. PROCESSOS_ATIVOS: NÃO ENCONTRADO  \n2. NOVOS_CASOS_ANO: NÃO ENCONTRADO  \n3. PROVISAO_TRABALHISTA_BRL: NÃO ENCONTRADO  \n4. FUNCIONARIOS_REAL: NÃO ENCONTRADO  \n5. LAYOFFS_RECENTES: NÃO ENCONTRADO  \n6. CUSTO_MEDIO_CASO: NÃO ENCONTRADO  \n7. SINDICATO_ATIVO: NÃO ENCONTRADO  \n8. FONTE_PRINCIPAL: NÃO ENCONTRADO (SulAmérica não aparece nos rankings TST consultados: https://www.tst.jus.br/en/web/estatistica/tst/ranking-das-partes)"
+  },
+  {
+    "id": "light",
+    "name": "Light",
+    "ourEstimate": {
+      "employees": 4000,
+      "estimatedCases": 16,
+      "estimatedCostBRL": 608000,
+      "score": 60,
+      "verdict": "POTENTIAL"
+    },
+    "realData": "1. PROCESSOS_ATIVOS: NÃO ENCONTRADO  \n2. NOVOS_CASOS_ANO: NÃO ENCONTRADO  \n3. PROVISAO_TRABALHISTA_BRL: NÃO ENCONTRADO  \n4. FUNCIONARIOS_REAL: NÃO ENCONTRADO  \n5. LAYOFFS_RECENTES: NÃO ENCONTRADO  \n6. CUSTO_MEDIO_CASO: NÃO ENCONTRADO  \n7. SINDICATO_ATIVO: NÃO ENCONTRADO  \n8. FONTE_PRINCIPAL: https://www.tst.jus.br/en/web/estatistica/tst/ranking-das-partes (Ranking TST não lista Light nos top)[2]"
+  }
+]
