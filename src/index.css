@@ -5,11 +5,52 @@
 @layer base {
   body {
     @apply font-sans;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Custom scrollbar for dark theme */
+  ::-webkit-scrollbar {
+    width: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #141414;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #3A3A3A;
+    border-radius: 3px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #6B6B6B;
   }
 }
 
 @layer components {
   .score-gauge-circle {
     transition: stroke-dashoffset 1s ease-out;
+  }
+
+  .enter-card {
+    @apply bg-enter-gray-900 border border-enter-gray-800 rounded-enter transition-all duration-200;
+  }
+
+  .enter-card-hover {
+    @apply enter-card hover:border-enter-gray-600 hover:bg-enter-gray-800 cursor-pointer;
+  }
+
+  .enter-btn-primary {
+    @apply bg-enter-black text-enter-white px-6 py-2.5 rounded-enter text-sm font-semibold
+           uppercase tracking-wide border border-enter-gray-700
+           hover:bg-enter-gray-900 hover:border-enter-gray-500 transition-colors cursor-pointer;
+  }
+
+  .enter-btn-gold {
+    @apply bg-enter-gold text-enter-black px-6 py-2.5 rounded-enter text-sm font-semibold
+           uppercase tracking-wide border border-enter-gold
+           hover:bg-enter-gold-light transition-colors cursor-pointer;
+  }
+
+  .enter-badge {
+    @apply inline-flex items-center px-2.5 py-1 rounded-enter text-xs font-semibold;
   }
 }

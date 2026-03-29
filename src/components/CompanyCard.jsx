@@ -1,57 +1,57 @@
-import { Users, MapPin, Building2, ChevronRight } from 'lucide-react';
+import { Users, MapPin, ChevronRight } from 'lucide-react';
 import ScoreBreakdown from './ScoreBreakdown';
 
 const SEGMENT_COLORS = {
-  'Financial Services': 'bg-blue-100 text-blue-700',
-  'Tech': 'bg-violet-100 text-violet-700',
-  'Retail': 'bg-orange-100 text-orange-700',
-  'Airlines': 'bg-sky-100 text-sky-700',
-  'Telecom': 'bg-teal-100 text-teal-700',
-  'Healthcare': 'bg-rose-100 text-rose-700',
-  'Utilities': 'bg-lime-100 text-lime-700',
-  'Services': 'bg-slate-100 text-slate-700',
+  'Financial Services': 'bg-blue-500/10 text-blue-400 border-blue-500/20',
+  'Tech': 'bg-violet-500/10 text-violet-400 border-violet-500/20',
+  'Retail': 'bg-orange-500/10 text-orange-400 border-orange-500/20',
+  'Airlines': 'bg-sky-500/10 text-sky-400 border-sky-500/20',
+  'Telecom': 'bg-teal-500/10 text-teal-400 border-teal-500/20',
+  'Healthcare': 'bg-rose-500/10 text-rose-400 border-rose-500/20',
+  'Utilities': 'bg-lime-500/10 text-lime-400 border-lime-500/20',
+  'Services': 'bg-enter-gold/10 text-enter-gold border-enter-gold/20',
 };
 
-const VERDICT_STYLES = {
-  QUALIFIED: 'border-emerald-200 hover:border-emerald-300',
-  POTENTIAL: 'border-amber-200 hover:border-amber-300',
-  NOT_QUALIFIED: 'border-red-200 hover:border-red-300',
+const VERDICT_BORDER = {
+  QUALIFIED: 'border-verdict-qualified/30 hover:border-verdict-qualified/60',
+  POTENTIAL: 'border-verdict-potential/30 hover:border-verdict-potential/60',
+  NOT_QUALIFIED: 'border-enter-gray-800 hover:border-enter-gray-600',
 };
 
 const VERDICT_DOT = {
-  QUALIFIED: 'bg-emerald-500',
-  POTENTIAL: 'bg-amber-500',
-  NOT_QUALIFIED: 'bg-red-400',
+  QUALIFIED: 'bg-verdict-qualified',
+  POTENTIAL: 'bg-verdict-potential',
+  NOT_QUALIFIED: 'bg-verdict-unqualified',
 };
 
 export default function CompanyCard({ company, onClick }) {
   const { score } = company;
-  const segColor = SEGMENT_COLORS[company.segment] || 'bg-slate-100 text-slate-700';
+  const segColor = SEGMENT_COLORS[company.segment] || 'bg-enter-gray-800 text-enter-gray-400 border-enter-gray-700';
 
   return (
     <button
       onClick={() => onClick(company)}
-      className={`w-full text-left bg-white rounded-xl border-2 ${VERDICT_STYLES[score.verdict]} p-5 transition-all hover:shadow-md group`}
+      className={`w-full text-left bg-enter-gray-900 rounded-enter border ${VERDICT_BORDER[score.verdict]} p-5 transition-all duration-200 hover:bg-enter-gray-800 cursor-pointer group`}
     >
       {/* Header */}
       <div className="flex items-start justify-between mb-3">
         <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-2 mb-1">
-            <div className={`w-2 h-2 rounded-full ${VERDICT_DOT[score.verdict]}`} />
-            <h3 className="font-semibold text-slate-900 truncate">{company.name}</h3>
+          <div className="flex items-center gap-2 mb-1.5">
+            <div className={`w-1.5 h-1.5 rounded-full ${VERDICT_DOT[score.verdict]}`} />
+            <h3 className="font-semibold text-enter-white truncate">{company.name}</h3>
           </div>
-          <span className={`inline-block text-xs font-medium px-2 py-0.5 rounded-full ${segColor}`}>
+          <span className={`enter-badge border ${segColor}`}>
             {company.segment}
           </span>
         </div>
         <div className="flex flex-col items-center ml-3">
-          <span className="text-2xl font-bold font-mono text-slate-900">{score.total}</span>
-          <span className="text-[10px] text-slate-400 uppercase tracking-wider">Score</span>
+          <span className="text-2xl font-bold font-mono text-enter-white">{score.total}</span>
+          <span className="text-[9px] text-enter-gray-500 uppercase tracking-widest">Score</span>
         </div>
       </div>
 
       {/* Stats */}
-      <div className="flex items-center gap-4 text-xs text-slate-500 mb-3">
+      <div className="flex items-center gap-4 text-xs text-enter-gray-500 mb-3">
         <span className="flex items-center gap-1">
           <Users className="w-3.5 h-3.5" />
           {company.employees.toLocaleString('pt-BR')}
@@ -65,18 +65,18 @@ export default function CompanyCard({ company, onClick }) {
       {/* Score breakdown */}
       <ScoreBreakdown score={score} compact />
 
-      {/* Estimated ARR */}
-      <div className="mt-3 pt-3 border-t border-slate-100 flex items-center justify-between">
-        <div className="text-xs text-slate-500">
-          <span className="font-medium text-slate-700">
-            ~{score.estimatedCases} casos/ano
+      {/* Bottom stats */}
+      <div className="mt-3 pt-3 border-t border-enter-gray-800 flex items-center justify-between">
+        <div className="text-xs text-enter-gray-500">
+          <span className="font-medium text-enter-gray-300">
+            ~{score.estimatedCases.toLocaleString('pt-BR')} casos/ano
           </span>
           {' · '}
-          ARR est. <span className="font-mono font-medium text-slate-700">
+          ARR est. <span className="font-mono font-medium text-enter-gold">
             US${(score.estimatedARR / 1000).toFixed(0)}k
           </span>
         </div>
-        <ChevronRight className="w-4 h-4 text-slate-300 group-hover:text-slate-500 transition-colors" />
+        <ChevronRight className="w-4 h-4 text-enter-gray-600 group-hover:text-enter-gold transition-colors" />
       </div>
     </button>
   );

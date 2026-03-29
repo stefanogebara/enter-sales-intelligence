@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
 
 const VERDICT_COLORS = {
-  QUALIFIED: { stroke: '#10B981', bg: 'bg-emerald-50', text: 'text-emerald-700', label: 'Qualificado' },
-  POTENTIAL: { stroke: '#F59E0B', bg: 'bg-amber-50', text: 'text-amber-700', label: 'Potencial' },
-  NOT_QUALIFIED: { stroke: '#EF4444', bg: 'bg-red-50', text: 'text-red-700', label: 'Não Qualificado' },
+  QUALIFIED: { stroke: '#22C55E', bg: 'bg-verdict-qualified-bg', text: 'text-verdict-qualified', label: 'Qualificado' },
+  POTENTIAL: { stroke: '#FFAE35', bg: 'bg-verdict-potential-bg', text: 'text-verdict-potential', label: 'Potencial' },
+  NOT_QUALIFIED: { stroke: '#EF4444', bg: 'bg-verdict-unqualified-bg', text: 'text-verdict-unqualified', label: 'Não Qualificado' },
 };
 
 export default function ScoreGauge({ score, size = 120, strokeWidth = 8 }) {
@@ -22,37 +22,25 @@ export default function ScoreGauge({ score, size = 120, strokeWidth = 8 }) {
     <div className="flex flex-col items-center gap-2">
       <div className="relative" style={{ width: size, height: size }}>
         <svg width={size} height={size} className="-rotate-90">
-          {/* Background circle */}
           <circle
-            cx={size / 2}
-            cy={size / 2}
-            r={radius}
-            fill="none"
-            stroke="#E2E8F0"
-            strokeWidth={strokeWidth}
+            cx={size / 2} cy={size / 2} r={radius}
+            fill="none" stroke="#2A2A2A" strokeWidth={strokeWidth}
           />
-          {/* Score circle */}
           <circle
-            cx={size / 2}
-            cy={size / 2}
-            r={radius}
-            fill="none"
-            stroke={colors.stroke}
-            strokeWidth={strokeWidth}
+            cx={size / 2} cy={size / 2} r={radius}
+            fill="none" stroke={colors.stroke} strokeWidth={strokeWidth}
             strokeLinecap="round"
-            strokeDasharray={circumference}
-            strokeDashoffset={offset}
+            strokeDasharray={circumference} strokeDashoffset={offset}
             className="score-gauge-circle"
           />
         </svg>
-        {/* Score number */}
         <div className="absolute inset-0 flex items-center justify-center">
           <span className="text-2xl font-bold font-mono" style={{ color: colors.stroke }}>
             {score.total}
           </span>
         </div>
       </div>
-      <span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${colors.bg} ${colors.text}`}>
+      <span className={`enter-badge ${colors.bg} ${colors.text}`}>
         {colors.label}
       </span>
     </div>
