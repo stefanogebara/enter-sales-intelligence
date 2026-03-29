@@ -23,6 +23,6 @@ app.use((err, _req, res, _next) => {
 
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
-  console.log(`OpenRouter key: ${process.env.OPENROUTER_API_KEY.substring(0, 15)}...`);
+  console.log('OpenRouter key: configured');
   console.log('Models: perplexity/sonar-pro (search) + anthropic/claude-sonnet-4-6 (generate)');
 });

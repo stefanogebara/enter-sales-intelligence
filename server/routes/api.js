@@ -1,10 +1,22 @@
 import { Router } from 'express';
 import { companies, getCompanyById } from '../lib/companies.js';
 import { calculateScore } from '../lib/scoring.js';
-import { callWithSearch, callGenerate, callClaude } from '../lib/claude.js';
+import { callGenerate, callClaude } from '../lib/claude.js';
 import { qualificationPrompt, discoveryPrompt, pitchPrompt } from '../lib/prompts.js';
 
 const router = Router();
+
+// Validate companyId: must be lowercase alphanumeric + hyphens only
+function validateCompanyId(id) {
+  return typeof id === 'string' && /^[a-z0-9-]+$/.test(id) && id.length < 50;
+}
+
+// Sanitize error messages — never expose internal details to client
+function safeErrorMessage(err) {
+  if (err.name === 'AbortError') return 'Análise excedeu o tempo limite. Tente novamente.';
+  console.error('API error:', err.message);
+  return 'Falha na análise. Tente novamente.';
+}
 
 // In-memory cache: { [companyId:type]: { text, timestamp } }
 const cache = new Map();
@@ -41,10 +53,10 @@ router.get('/companies/:id', (req, res) => {
 router.post('/qualify', async (req, res) => {
   try {
     const { companyId } = req.body;
-    if (!companyId) return res.status(400).json({ error: 'companyId required' });
+    if (!validateCompanyId(companyId)) return res.status(400).json({ error: 'companyId inválido' });
 
     const company = getCompanyById(companyId);
-    if (!company) return res.status(404).json({ error: 'Company not found' });
+    if (!company) return res.status(404).json({ error: 'Empresa não encontrada' });
 
     const cacheKey = `${companyId}:qualify`;
     const cached = getCached(cacheKey);
@@ -57,10 +69,7 @@ router.post('/qualify', async (req, res) => {
     setCache(cacheKey, text);
     res.json({ text });
   } catch (err) {
-    const message = err.name === 'AbortError'
-      ? 'Análise excedeu o tempo limite de 75 segundos. Tente novamente.'
-      : err.message;
-    res.status(500).json({ error: message });
+    res.status(500).json({ error: safeErrorMessage(err) });
   }
 });
 
@@ -68,28 +77,24 @@ router.post('/qualify', async (req, res) => {
 router.post('/discovery', async (req, res) => {
   try {
     const { companyId } = req.body;
-    if (!companyId) return res.status(400).json({ error: 'companyId required' });
+    if (!validateCompanyId(companyId)) return res.status(400).json({ error: 'companyId inválido' });
 
     const company = getCompanyById(companyId);
-    if (!company) return res.status(404).json({ error: 'Company not found' });
+    if (!company) return res.status(404).json({ error: 'Empresa não encontrada' });
 
     const cacheKey = `${companyId}:discovery`;
     const cached = getCached(cacheKey);
     if (cached) return res.json({ text: cached, cached: true });
 
-    // Use qualification data if available
     const qualData = getCached(`${companyId}:qualify`) || '';
     const enriched = { ...company, score: calculateScore(company) };
     const { system, user } = discoveryPrompt(enriched, qualData);
-    const text = await callGenerate(system, user);  // Claude Sonnet — no web search needed
+    const text = await callGenerate(system, user);
 
     setCache(cacheKey, text);
     res.json({ text });
   } catch (err) {
-    const message = err.name === 'AbortError'
-      ? 'Geração excedeu o tempo limite. Tente novamente.'
-      : err.message;
-    res.status(500).json({ error: message });
+    res.status(500).json({ error: safeErrorMessage(err) });
   }
 });
 
@@ -97,10 +102,10 @@ router.post('/discovery', async (req, res) => {
 router.post('/pitch', async (req, res) => {
   try {
     const { companyId } = req.body;
-    if (!companyId) return res.status(400).json({ error: 'companyId required' });
+    if (!validateCompanyId(companyId)) return res.status(400).json({ error: 'companyId inválido' });
 
     const company = getCompanyById(companyId);
-    if (!company) return res.status(404).json({ error: 'Company not found' });
+    if (!company) return res.status(404).json({ error: 'Empresa não encontrada' });
 
     const cacheKey = `${companyId}:pitch`;
     const cached = getCached(cacheKey);
@@ -109,47 +114,46 @@ router.post('/pitch', async (req, res) => {
     const qualData = getCached(`${companyId}:qualify`) || '';
     const enriched = { ...company, score: calculateScore(company) };
     const { system, user } = pitchPrompt(enriched, qualData);
-    const text = await callGenerate(system, user);  // Claude Sonnet — no web search needed
+    const text = await callGenerate(system, user);
 
     setCache(cacheKey, text);
     res.json({ text });
   } catch (err) {
-    const message = err.name === 'AbortError'
-      ? 'Geração excedeu o tempo limite. Tente novamente.'
-      : err.message;
-    res.status(500).json({ error: message });
+    res.status(500).json({ error: safeErrorMessage(err) });
   }
 });
 
-// POST /api/warm — pre-warm cache for top N companies (for demo)
-router.post('/warm', async (req, res) => {
-  const { count = 3 } = req.body;
+// POST /api/warm — pre-warm cache (localhost only, capped at 5)
+router.post('/warm', (req, res) => {
+  const host = req.hostname || req.headers.host;
+  if (!host?.includes('localhost')) return res.status(403).json({ error: 'Forbidden' });
+
+  const n = Math.max(1, Math.min(parseInt(req.body.count, 10) || 3, 5));
   const scored = companies
     .map((c) => ({ ...c, score: calculateScore(c) }))
     .sort((a, b) => b.score.total - a.score.total)
-    .slice(0, count);
+    .slice(0, n);
 
   res.json({ message: `Warming ${scored.length} companies...`, companies: scored.map((c) => c.name) });
 
-  // Run in background (response already sent)
-  for (const company of scored) {
-    const cacheKey = `${company.id}:qualify`;
-    if (getCached(cacheKey)) continue;
-    try {
-      const { system, user } = qualificationPrompt(company);
-      const text = await callClaude(system, user);
-      setCache(cacheKey, text);
-      console.log(`Warmed: ${company.name} (qualify)`);
-    } catch (err) {
-      console.error(`Warm failed for ${company.name}:`, err.message);
+  (async () => {
+    for (const company of scored) {
+      const cacheKey = `${company.id}:qualify`;
+      if (getCached(cacheKey)) continue;
+      try {
+        const { system, user } = qualificationPrompt(company);
+        const text = await callClaude(system, user);
+        setCache(cacheKey, text);
+      } catch (_) { /* logged by safeErrorMessage internally */ }
+      await new Promise((r) => setTimeout(r, 3000));
     }
-    // 3s delay between calls to avoid rate limiting
-    await new Promise((r) => setTimeout(r, 3000));
-  }
+  })();
 });
 
-// GET /api/cache/status — check what's cached (for demo)
-router.get('/cache/status', (_req, res) => {
+// GET /api/cache/status — localhost only
+router.get('/cache/status', (req, res) => {
+  const host = req.hostname || req.headers.host;
+  if (!host?.includes('localhost')) return res.status(403).json({ error: 'Forbidden' });
   const entries = [];
   for (const [key, val] of cache.entries()) {
     entries.push({ key, age: Math.round((Date.now() - val.timestamp) / 1000) });

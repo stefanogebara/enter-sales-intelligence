@@ -55,7 +55,7 @@ Dados pré-calculados do nosso modelo:
 - Volume: ${company.score?.volume || 'N/A'}, Complexidade: ${company.score?.complexity || 'N/A'}, Timing: ${company.score?.timing || 'N/A'}
 - Casos estimados/ano: ~${company.score?.estimatedCases || 'N/A'}
 - Turnover do setor: ${((company.score?.turnoverRate || 0) * 100).toFixed(0)}%
-- Benchmark CNJ do setor: ${company.score?.cnjRate || 'N/A'} casos/1000 func./ano
+- Benchmark CNJ do setor: ${company.score?.litigationRate || 'N/A'} casos/1000 func./ano
 
 Pesquise dados reais e valide/corrija nossas estimativas. Foque em dados concretos e recentes.`;
 

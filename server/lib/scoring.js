@@ -90,8 +90,8 @@ export function calculateScore(company) {
   //   outsourcingRisk (bool) → sector-based: telecom, utilities, facilities = true
   //   publicCompany (bool)   → verifiable via B3/NASDAQ listing
   //   sectorComplexity (0-10)→ sector default from CNJ/TST data (not per-company)
-  const statesScore = clamp((company.statesCount || company.states?.length || 5) / 27 * 10, 0, 10);
-  const unionScore = company.unionDispute ? 8 : (company.unionActivity || 4);
+  const statesScore = clamp((company.states?.length || 1) / 27 * 10, 0, 10);
+  const unionScore = company.unionDispute ? 8 : 4;
   const outsourcingScore = company.outsourcingRisk ? 8 : 3;
   const publicScore = company.publicCompany ? 6 : 3;
   const sectorCx = SECTOR_COMPLEXITY[company.sector] || 5;
