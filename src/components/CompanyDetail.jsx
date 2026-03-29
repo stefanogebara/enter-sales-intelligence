@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { ArrowLeft, Users, MapPin, Building2, Briefcase, MessageSquare, Presentation, Loader2, Copy, Check } from 'lucide-react';
+import Markdown from 'react-markdown';
 import ScoreGauge from './ScoreGauge';
 import ScoreBreakdown from './ScoreBreakdown';
 
@@ -204,8 +205,17 @@ function AIPanel({ type, title, description, buttonLabel, state, onRun }) {
             {copied ? 'Copiado!' : 'Copiar'}
           </button>
         </div>
-        <div className="text-sm text-enter-gray-300 whitespace-pre-wrap leading-relaxed">
-          {state.data}
+        <div className="prose prose-sm prose-invert max-w-none
+          prose-headings:text-enter-gold prose-headings:font-semibold prose-headings:border-b prose-headings:border-enter-gray-800 prose-headings:pb-2 prose-headings:mb-3
+          prose-h2:text-base prose-h3:text-sm
+          prose-strong:text-enter-white
+          prose-p:text-enter-gray-300 prose-p:leading-relaxed
+          prose-li:text-enter-gray-300
+          prose-a:text-enter-gold prose-a:no-underline hover:prose-a:underline
+          prose-em:text-enter-gray-400
+          prose-code:text-enter-gold prose-code:bg-enter-gray-800 prose-code:px-1 prose-code:rounded
+        ">
+          <Markdown>{state.data}</Markdown>
         </div>
       </div>
     );
