@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { ChevronRight, ChevronLeft, ArrowRight } from 'lucide-react';
 import { companies } from '../data/companies';
 
-const SLIDES = [HeroSlide, ProblemSlide, OpportunitySlide, ScoreSlide, PrioritizationSlide, DiscoverySlide, PitchSlide, WhatItDoes, PipelineSlide];
+const SLIDES = [HeroSlide, ProblemSlide, OpportunitySlide, ScoreSlide, PrioritizationSlide, DiscoverySlide, WhatItDoes, PitchSlide, PipelineSlide];
 
 export default function Presentation({ onEnterPlatform }) {
   const [slide, setSlide] = useState(0);
