@@ -54,6 +54,19 @@ const AVG_CASE_COST_BRL = {
   services: 15000,
 };
 
+// Sector complexity defaults (verifiable from CNJ/TST sector analysis)
+// Reflects: regulatory burden, CLT claim diversity, typical operational complexity
+const SECTOR_COMPLEXITY = {
+  financial_services: 8,  // 7th/8th hour, metas abusivas, cargo de confiança, multiple CLT categories
+  tech: 4,                // mostly white-collar, fewer CLT categories
+  retail: 6,              // Sunday work, shift schedules, commission disputes
+  airlines: 9,            // Aeronauts law, crew scheduling, multi-category workforce
+  telecom: 7,             // outsourcing chains, field technicians, pejotização
+  healthcare: 8,          // insalubridade, shift (12x36), multiple professional categories
+  utilities: 7,           // periculosidade, field work, privatization legacy
+  services: 6,            // high volume but standardized claims (overtime, DORT)
+};
+
 function clamp(v, lo, hi) { return Math.max(lo, Math.min(hi, v)); }
 function norm(v, lo, hi) { return hi === lo ? 0 : clamp(((v - lo) / (hi - lo)) * 100, 0, 100); }
 
@@ -71,12 +84,24 @@ export function calculateScore(company) {
   const volumeRaw = norm(Math.log10(Math.max(estimatedCases, 1)), 1, 4);
 
   // --- Complexity (40%) ---
+  // Redesigned to use VERIFIABLE indicators only:
+  //   statesCount (0-27)     → from LinkedIn/CVM/annual reports
+  //   unionDispute (boolean) → from union websites, news (Contraf-CUT, SNA, etc.)
+  //   outsourcingRisk (bool) → sector-based: telecom, utilities, facilities = true
+  //   publicCompany (bool)   → verifiable via B3/NASDAQ listing
+  //   sectorComplexity (0-10)→ sector default from CNJ/TST data (not per-company)
+  const statesScore = clamp((company.statesCount || company.states?.length || 5) / 27 * 10, 0, 10);
+  const unionScore = company.unionDispute ? 8 : (company.unionActivity || 4);
+  const outsourcingScore = company.outsourcingRisk ? 8 : 3;
+  const publicScore = company.publicCompany ? 6 : 3;
+  const sectorCx = SECTOR_COMPLEXITY[company.sector] || 5;
+
   const complexityFactors = {
-    cargoDiversity: company.cargoDiversity || 5,
-    multiState: company.multiState || 5,
-    unionActivity: company.unionActivity || 5,
-    operationalRatio: (company.operationalRatio || 0.5) * 10,
-    seniorityVariance: company.seniorityVariance || 5,
+    presencaEstadual: Math.round(statesScore * 10) / 10,
+    atividadeSindical: unionScore,
+    riscoTerceirizacao: outsourcingScore,
+    empresaAberta: publicScore,
+    complexidadeSetor: sectorCx,
   };
   const complexitySum = Object.values(complexityFactors).reduce((a, b) => a + b, 0);
   const complexityRaw = norm(complexitySum, 0, 50);

@@ -109,12 +109,12 @@ function OverviewTab({ company }) {
       <div>
         <h3 className="text-base font-semibold text-enter-white mb-4">Fatores de Risco</h3>
         <div className="space-y-5">
-          <FactorSection title="Complexidade" factors={[
-            { label: 'Diversidade de cargos', value: score.complexityFactors.cargoDiversity, max: 10 },
-            { label: 'Presença multiestadual', value: score.complexityFactors.multiState, max: 10 },
-            { label: 'Atividade sindical', value: score.complexityFactors.unionActivity, max: 10 },
-            { label: 'Ratio operacional', value: score.complexityFactors.operationalRatio, max: 10 },
-            { label: 'Variância de senioridade', value: score.complexityFactors.seniorityVariance, max: 10 },
+          <FactorSection title="Complexidade (verificável)" factors={[
+            { label: 'Presença estadual', value: score.complexityFactors.presencaEstadual, max: 10 },
+            { label: 'Atividade sindical', value: score.complexityFactors.atividadeSindical, max: 10 },
+            { label: 'Risco terceirização', value: score.complexityFactors.riscoTerceirizacao, max: 10 },
+            { label: 'Empresa aberta (B3/SEC)', value: score.complexityFactors.empresaAberta, max: 10 },
+            { label: 'Complexidade do setor', value: score.complexityFactors.complexidadeSetor, max: 10 },
           ]} />
           <FactorSection title="Timing" factors={[
             { label: 'Layoffs recentes', value: score.timingFactors.recentLayoffs, max: 10 },

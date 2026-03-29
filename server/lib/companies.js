@@ -33,6 +33,9 @@ export const companies = [
     mAndA: 2,
     restructuring: 5,  // ↑ mandatory return-to-office triggered manifesto from 300 employees
     privatization: 0,
+    unionDispute: true,
+    publicCompany: true,
+    outsourcingRisk: false,
     notes: 'Nov 2025: 12-14 dismissed por justa causa após oposição ao RTO — retaliação sindical exposure. Turnover 20% em 2023. SEEB-SP/Osasco cobre Nubank. 114M clientes.',
   },
   {
@@ -52,6 +55,9 @@ export const companies = [
     mAndA: 3,
     restructuring: 6,  // ↑ reestruturação sem diálogo sindical; discriminação de gênero documentada
     privatization: 0,
+    unionDispute: true,
+    publicCompany: true,
+    outsourcingRisk: false,
     notes: 'Reestruturação sem aviso ao sindicato. Contraf-CUT coordenação internacional. Proporção feminina caiu 59%→43% = exposição discriminação gênero. 15+ demissões/mês reportadas.',
   },
   {
@@ -71,6 +77,9 @@ export const companies = [
     mAndA: 7,
     restructuring: 7,
     privatization: 0,
+    unionDispute: true,
+    publicCompany: true,
+    outsourcingRisk: false,
     notes: 'TST 2015: 14,818 ações ativas. Set/2025: ~1,000 demitidos por keystroke monitoring (home office). Sindicato levou ao TRT-SP, acordo 4-6 meses salário + R$9k. Provisão total ~R$36.2B. Maior banco privado BR.',
   },
   {
@@ -90,6 +99,9 @@ export const companies = [
     mAndA: 5,
     restructuring: 9,  // ↑ PDV lançado; R$570M provisão especial para reestruturação
     privatization: 0,
+    unionDispute: true,
+    publicCompany: true,
+    outsourcingRisk: false,
     notes: 'TST 2015: 11,316 ações. FY2024: 2,200 demissões, PDV, R$570M provisão reestruturação. CEO Noronha acelerou digitalização. Ratio cliente/func subiu (1,298 vs 1,227) = risco overwork.',
   },
   {
@@ -109,6 +121,9 @@ export const companies = [
     mAndA: 2,
     restructuring: 4,
     privatization: 0,
+    unionDispute: false,
+    publicCompany: false,
+    outsourcingRisk: false,
     notes: 'Layoffs significativos 2023, JP Morgan como acionista',
   },
   {
@@ -128,6 +143,9 @@ export const companies = [
     mAndA: 3,
     restructuring: 2,
     privatization: 0,
+    unionDispute: false,
+    publicCompany: false,
+    outsourcingRisk: false,
     notes: 'Banco cativo, ligado à VW do Brasil com sindicato metalúrgico forte',
   },
   {
@@ -147,6 +165,9 @@ export const companies = [
     mAndA: 4,
     restructuring: 3,
     privatization: 0,
+    unionDispute: false,
+    publicCompany: true,
+    outsourcingRisk: false,
     notes: 'Controlado pelo BTG Pactual, foco em crédito consignado',
   },
   {
@@ -166,6 +187,9 @@ export const companies = [
     mAndA: 2,
     restructuring: 3,
     privatization: 0,
+    unionDispute: false,
+    publicCompany: false,
+    outsourcingRisk: false,
     notes: 'Rede de agências físicas para público C/D, alta rotatividade de gerentes',
   },
   {
@@ -185,6 +209,9 @@ export const companies = [
     mAndA: 3,
     restructuring: 3,
     privatization: 0,
+    unionDispute: false,
+    publicCompany: true,
+    outsourcingRisk: false,
     notes: 'IPO na Nasdaq, crescimento acelerado, cultura de startup',
   },
   {
@@ -204,6 +231,9 @@ export const companies = [
     mAndA: 2,
     restructuring: 2,
     privatization: 0,
+    unionDispute: false,
+    publicCompany: true,
+    outsourcingRisk: false,
     notes: 'Joint venture Votorantim + Banco do Brasil, estável',
   },
   {
@@ -223,6 +253,9 @@ export const companies = [
     mAndA: 1,
     restructuring: 3,
     privatization: 0,
+    unionDispute: false,
+    publicCompany: true,
+    outsourcingRisk: false,
     notes: 'Banco tradicional, foco em aposentados/INSS, funcionários com alta antiguidade',
   },
   {
@@ -242,6 +275,9 @@ export const companies = [
     mAndA: 1,
     restructuring: 1,
     privatization: 0,
+    unionDispute: false,
+    publicCompany: true,
+    outsourcingRisk: false,
     notes: 'Middle market, estável',
   },
   {
@@ -261,6 +297,9 @@ export const companies = [
     mAndA: 2,
     restructuring: 4,
     privatization: 0,
+    unionDispute: false,
+    publicCompany: true,
+    outsourcingRisk: false,
     notes: 'Crédito consignado, reestruturação digital em andamento',
   },
   {
@@ -280,6 +319,9 @@ export const companies = [
     mAndA: 4,
     restructuring: 5,
     privatization: 0,
+    unionDispute: false,
+    publicCompany: true,
+    outsourcingRisk: false,
     notes: 'Grupo UOL/PagSeguro, layoffs em tech, múltiplas subsidiárias',
   },
   {
@@ -299,6 +341,9 @@ export const companies = [
     mAndA: 1,
     restructuring: 2,
     privatization: 0,
+    unionDispute: false,
+    publicCompany: false,
+    outsourcingRisk: false,
     notes: 'Financeira focada em veículos',
   },
   {
@@ -318,6 +363,9 @@ export const companies = [
     mAndA: 3,
     restructuring: 3,
     privatization: 0,
+    unionDispute: false,
+    publicCompany: false,
+    outsourcingRisk: false,
     notes: 'Cobrança e recuperação de crédito, alta rotatividade de operadores',
   },
   {
@@ -337,6 +385,9 @@ export const companies = [
     mAndA: 1,
     restructuring: 1,
     privatization: 0,
+    unionDispute: false,
+    publicCompany: false,
+    outsourcingRisk: false,
     notes: 'Promotora de crédito consignado, pequena',
   },
   {
@@ -356,6 +407,9 @@ export const companies = [
     mAndA: 1,
     restructuring: 1,
     privatization: 0,
+    unionDispute: false,
+    publicCompany: false,
+    outsourcingRisk: false,
     notes: 'Banco regional, crédito consignado',
   },
 
@@ -379,6 +433,9 @@ export const companies = [
     mAndA: 2,
     restructuring: 8,
     privatization: 0,
+    unionDispute: false,
+    publicCompany: true,
+    outsourcingRisk: false,
     notes: 'Layoffs massivos globais 2023-2024 (~20% da força), impacto direto na operação BR',
   },
   {
@@ -398,6 +455,9 @@ export const companies = [
     mAndA: 2,
     restructuring: 4,
     privatization: 0,
+    unionDispute: true,
+    publicCompany: true,
+    outsourcingRisk: false,
     notes: 'Funcionários corporativos + risco gigante de vínculo empregatício com motoristas (~1M motoristas). Decisões judiciais recentes reconhecendo vínculo.',
   },
   {
@@ -417,6 +477,9 @@ export const companies = [
     mAndA: 1,
     restructuring: 3,
     privatization: 0,
+    unionDispute: false,
+    publicCompany: true,
+    outsourcingRisk: false,
     notes: 'Operação BR pequena, layoffs globais 2023',
   },
   {
@@ -436,6 +499,9 @@ export const companies = [
     mAndA: 5,
     restructuring: 8,
     privatization: 0,
+    unionDispute: false,
+    publicCompany: false,
+    outsourcingRisk: false,
     notes: 'Layoffs massivos 2023 (>50% do quadro), pivot de modelo, múltiplas aquisições (CredPago, Vista)',
   },
 
@@ -459,6 +525,9 @@ export const companies = [
     mAndA: 4,
     restructuring: 4,  // anti-union conduct; NDA/silence clauses on dismissed workers challenged
     privatization: 0,
+    unionDispute: true,
+    publicCompany: true,
+    outsourcingRisk: false,
     notes: 'Enter client (confirmed). Postura anti-sindical documentada (SINDPD-SC). Jan/2025: 38 BR demitidos por IA. STF courier classification looming. 21 CDs. R$57B investidos BR 2026.',
   },
   {
@@ -478,6 +547,9 @@ export const companies = [
     mAndA: 3,
     restructuring: 5,
     privatization: 0,
+    unionDispute: false,
+    publicCompany: false,
+    outsourcingRisk: false,
     notes: 'Layoffs 2023-2024, risco de vínculo com entregadores (similar a Uber), centenas de milhares de entregadores',
   },
   {
@@ -497,6 +569,9 @@ export const companies = [
     mAndA: 5,
     restructuring: 6,
     privatization: 0,
+    unionDispute: false,
+    publicCompany: true,
+    outsourcingRisk: false,
     notes: 'Varejista com rede de lojas + CD + ecommerce. Demissões em massa 2023-2024 na operação de tech/ecommerce. Sindicato do comércio ativo.',
   },
 
@@ -520,6 +595,9 @@ export const companies = [
     mAndA: 6,
     restructuring: 8,  // Chapter 11 exit 2022; R$4B government investment 2026
     privatization: 0,
+    unionDispute: true,
+    publicCompany: true,
+    outsourcingRisk: false,
     notes: 'Enter client (confirmed). 30% win rate increase com Enter (consumer). SNA muito ativo. Crise 2020: 2,743 tripulantes + 1,200 demitidos — ações ainda no pipeline. 60 destinos, 776 voos/dia.',
   },
   {
@@ -539,6 +617,9 @@ export const companies = [
     mAndA: 3,
     restructuring: 10,  // ↑ Chapter 11 (Mai/2025 - Fev/2026), US$2.5B dívida eliminada
     privatization: 0,
+    unionDispute: true,
+    publicCompany: true,
+    outsourcingRisk: false,
     notes: 'Chapter 11 Mai/2025–Fev/2026. SNA acionou TST: 3,810 demissões. 500+ aeroviários demitidos. 113 pilotos saíram 2024 (48 só em Set/2025). Estado de greve Dez/2025. ~150 destinos.',
   },
 
@@ -562,6 +643,9 @@ export const companies = [
     mAndA: 7,
     restructuring: 6,
     privatization: 4,
+    unionDispute: true,
+    publicCompany: true,
+    outsourcingRisk: true,
     notes: 'Absorveu parte da Oi. Terceirização massiva de técnicos de campo gera contencioso de vínculo. Sindicato SINTTEL forte.',
   },
   {
@@ -581,6 +665,9 @@ export const companies = [
     mAndA: 1,
     restructuring: 2,
     privatization: 0,
+    unionDispute: false,
+    publicCompany: false,
+    outsourcingRisk: true,
     notes: 'Telecom menor, operação concentrada',
   },
   {
@@ -600,6 +687,9 @@ export const companies = [
     mAndA: 8,
     restructuring: 5,
     privatization: 0,
+    unionDispute: false,
+    publicCompany: true,
+    outsourcingRisk: true,
     notes: 'Comprou parte da Oi móvel em 2022, integração de funcionários em andamento, risco de equiparação salarial',
   },
 
@@ -623,6 +713,9 @@ export const companies = [
     mAndA: 8,
     restructuring: 6,
     privatization: 0,
+    unionDispute: false,
+    publicCompany: true,
+    outsourcingRisk: false,
     notes: 'Adquirida pela Rede D\'Or em 2022 → integração de quadros, demissões de duplicação',
   },
   {
@@ -642,6 +735,9 @@ export const companies = [
     mAndA: 10,
     restructuring: 9,  // ↑ ANS investigando balanços desde 2024; financial distress; integração NDI incompleta
     privatization: 0,
+    unionDispute: false,
+    publicCompany: true,
+    outsourcingRisk: false,
     notes: 'MAIOR operadora BR. Fusão Hapvida+NDI 2022: 69k+28k médicos. ANS investigando balanços. 86 hospitais, 77 UPAs, 341 clínicas. Insalubridade +1,092% no TST 2024. Provisões possivelmente underfunded.',
   },
 
@@ -665,6 +761,9 @@ export const companies = [
     mAndA: 2,
     restructuring: 8,
     privatization: 3,
+    unionDispute: true,
+    publicCompany: true,
+    outsourcingRisk: true,
     notes: 'Recuperação judicial 2023, demissões, sindicato dos eletricitários muito forte, periculosidade',
   },
   {
@@ -684,6 +783,9 @@ export const companies = [
     mAndA: 7,
     restructuring: 4,
     privatization: 5,
+    unionDispute: true,
+    publicCompany: true,
+    outsourcingRisk: true,
     notes: 'Crescimento agressivo por aquisições de distribuidoras, presença em estados remotos, trabalho de campo perigoso',
   },
 
@@ -707,6 +809,9 @@ export const companies = [
     mAndA: 4,
     restructuring: 3,
     privatization: 0,
+    unionDispute: false,
+    publicCompany: true,
+    outsourcingRisk: true,
     notes: 'Facilities management (limpeza, segurança, portaria). 90% da força é operacional com altíssima rotatividade. Contencioso massivo por natureza.',
   },
   {
@@ -726,6 +831,9 @@ export const companies = [
     mAndA: 3,
     restructuring: 4,  // ↑ documented CLT violations: Art. 386 (women scheduled every Sunday)
     privatization: 0,
+    unionDispute: true,
+    publicCompany: false,
+    outsourcingRisk: true,
     notes: 'Call center #1 para volume TST. Violações documentadas: Art. 386 CLT, recusa a assinar rescisão. Primeira negociação coletiva formal 2025. TRT CG (PB) ação de demissão em massa. DORT/LER endêmico.',
   },
 ];

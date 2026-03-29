@@ -20,6 +20,10 @@ const AVG_CASE_COST = {
   airlines: 40000, telecom: 22000, healthcare: 25000,
   utilities: 35000, services: 15000,
 };
+const SECTOR_CX = {
+  financial_services: 8, tech: 4, retail: 6, airlines: 9,
+  telecom: 7, healthcare: 8, utilities: 7, services: 6,
+};
 
 function clamp(v, lo, hi) { return Math.max(lo, Math.min(hi, v)); }
 function norm(v, lo, hi) { return hi === lo ? 0 : clamp(((v - lo) / (hi - lo)) * 100, 0, 100); }
@@ -32,15 +36,24 @@ function calcScore(c) {
   const annCost = cases * avgC;
   const sep = Math.round(c.employees * t);
   const volRaw = norm(Math.log10(Math.max(cases, 1)), 1, 4);
-  const cxFactors = {
-    cargoDiversity: c.cargoDiversity || 5,
-    multiState: c.multiState || 5,
-    unionActivity: c.unionActivity || 5,
-    operationalRatio: (c.operationalRatio || 0.5) * 10,
-    seniorityVariance: c.seniorityVariance || 5,
+
+  // Complexity: verifiable indicators only
+  const statesN = c.states?.length || 1;
+  const stScore = clamp(statesN / 27 * 10, 0, 10);
+  const unScore = c.unionDispute ? 8 : (c.unionActivity || 4);
+  const outScore = c.outsourcingRisk ? 8 : 3;
+  const pubScore = c.publicCompany ? 6 : 3;
+  const secCx = SECTOR_CX[c.sector] || 5;
+  const complexityFactors = {
+    presencaEstadual: Math.round(stScore * 10) / 10,
+    atividadeSindical: unScore,
+    riscoTerceirizacao: outScore,
+    empresaAberta: pubScore,
+    complexidadeSetor: secCx,
   };
-  const cxSum = Object.values(cxFactors).reduce((a, b) => a + b, 0);
+  const cxSum = Object.values(complexityFactors).reduce((a, b) => a + b, 0);
   const cxRaw = norm(cxSum, 0, 50);
+
   const tmFactors = {
     recentLayoffs: c.recentLayoffs || 0,
     mAndA: c.mAndA || 0,
@@ -59,31 +72,29 @@ function calcScore(c) {
   return {
     total, volume: Math.round(volRaw), complexity: Math.round(cxRaw),
     timing: Math.round(tmRaw), verdict,
-    estimatedCases: cases,
-    estimatedAnnualCostBRL: annCost,
-    estimatedARR: estARR,
-    meetsARRThreshold: estARR >= 500000,
+    estimatedCases: cases, estimatedAnnualCostBRL: annCost,
+    estimatedARR: estARR, meetsARRThreshold: estARR >= 500000,
     annualSeparations: sep,
     turnoverRate: t, litigationRate: litR, avgCaseCost: avgC,
-    complexityFactors: cxFactors, timingFactors: tmFactors,
+    complexityFactors, timingFactors: tmFactors,
   };
 }
 
 const rawCompanies = [
-  { id:'itau',name:'Itaú Unibanco',sector:'financial_services',segment:'Financial Services',employees:96219,headquarters:'São Paulo, SP',cargoDiversity:9,multiState:10,unionActivity:9,operationalRatio:0.50,seniorityVariance:9,recentLayoffs:8,mAndA:7,restructuring:7,privatization:0 },
-  { id:'bradesco',name:'Bradesco',sector:'financial_services',segment:'Financial Services',employees:84022,headquarters:'Osasco, SP',cargoDiversity:9,multiState:10,unionActivity:9,operationalRatio:0.50,seniorityVariance:9,recentLayoffs:8,mAndA:5,restructuring:9,privatization:0 },
-  { id:'hapvida',name:'Hapvida',sector:'healthcare',segment:'Healthcare',employees:69000,headquarters:'Fortaleza, CE',cargoDiversity:10,multiState:10,unionActivity:8,operationalRatio:0.80,seniorityVariance:7,recentLayoffs:5,mAndA:10,restructuring:9,privatization:0 },
-  { id:'santander',name:'Santander Brasil',sector:'financial_services',segment:'Financial Services',employees:55646,headquarters:'São Paulo, SP',cargoDiversity:8,multiState:10,unionActivity:10,operationalRatio:0.55,seniorityVariance:8,recentLayoffs:6,mAndA:3,restructuring:6,privatization:0 },
-  { id:'verzani-sandrini',name:'Verzani & Sandrini',sector:'services',segment:'Services',employees:45000,headquarters:'São Paulo, SP',cargoDiversity:6,multiState:10,unionActivity:6,operationalRatio:0.90,seniorityVariance:5,recentLayoffs:3,mAndA:4,restructuring:3,privatization:0 },
-  { id:'aec',name:'AeC',sector:'services',segment:'Services',employees:30000,headquarters:'Belo Horizonte, MG',cargoDiversity:4,multiState:8,unionActivity:6,operationalRatio:0.90,seniorityVariance:3,recentLayoffs:5,mAndA:3,restructuring:4,privatization:0 },
-  { id:'mercado-livre',name:'Mercado Livre',sector:'retail',segment:'Retail',employees:33000,headquarters:'São Paulo, SP',cargoDiversity:9,multiState:10,unionActivity:7,operationalRatio:0.60,seniorityVariance:6,recentLayoffs:5,mAndA:4,restructuring:4,privatization:0 },
-  { id:'vivo',name:'Vivo (Telefônica Brasil)',sector:'telecom',segment:'Telecom',employees:32728,headquarters:'São Paulo, SP',cargoDiversity:8,multiState:10,unionActivity:8,operationalRatio:0.55,seniorityVariance:8,recentLayoffs:5,mAndA:7,restructuring:6,privatization:4 },
-  { id:'magalu',name:'Magazine Luiza',sector:'retail',segment:'Retail',employees:37000,headquarters:'Franca, SP',cargoDiversity:8,multiState:10,unionActivity:6,operationalRatio:0.75,seniorityVariance:7,recentLayoffs:5,mAndA:5,restructuring:5,privatization:0 },
-  { id:'latam',name:'LATAM Airlines Brasil',sector:'airlines',segment:'Airlines',employees:22500,headquarters:'São Paulo, SP',cargoDiversity:9,multiState:10,unionActivity:10,operationalRatio:0.75,seniorityVariance:8,recentLayoffs:7,mAndA:6,restructuring:8,privatization:0 },
-  { id:'energisa',name:'Energisa',sector:'utilities',segment:'Utilities',employees:18000,headquarters:'Cataguases, MG',cargoDiversity:7,multiState:10,unionActivity:7,operationalRatio:0.70,seniorityVariance:7,recentLayoffs:3,mAndA:8,restructuring:4,privatization:5 },
-  { id:'azul',name:'Azul Linhas Aéreas',sector:'airlines',segment:'Airlines',employees:15400,headquarters:'Barueri, SP',cargoDiversity:8,multiState:10,unionActivity:10,operationalRatio:0.75,seniorityVariance:7,recentLayoffs:9,mAndA:3,restructuring:10,privatization:0 },
-  { id:'tim',name:'TIM Brasil',sector:'telecom',segment:'Telecom',employees:10000,headquarters:'Rio de Janeiro, RJ',cargoDiversity:7,multiState:10,unionActivity:7,operationalRatio:0.50,seniorityVariance:7,recentLayoffs:4,mAndA:8,restructuring:5,privatization:0 },
-  { id:'nubank',name:'Nubank',sector:'financial_services',segment:'Financial Services',employees:8716,headquarters:'São Paulo, SP',cargoDiversity:6,multiState:5,unionActivity:5,operationalRatio:0.30,seniorityVariance:4,recentLayoffs:7,mAndA:2,restructuring:5,privatization:0 },
+  { id:'itau',name:'Itaú Unibanco',sector:'financial_services',segment:'Financial Services',employees:96219,headquarters:'São Paulo, SP',states:['SP','RJ','MG','RS','PR','BA','PE','CE','DF','SC','GO','ES','PA','MA'],unionDispute:true,publicCompany:true,outsourcingRisk:false,recentLayoffs:8,mAndA:7,restructuring:7,privatization:0 },
+  { id:'bradesco',name:'Bradesco',sector:'financial_services',segment:'Financial Services',employees:84022,headquarters:'Osasco, SP',states:['SP','RJ','MG','RS','PR','BA','PE','CE','DF','SC','GO','ES','PA'],unionDispute:true,publicCompany:true,outsourcingRisk:false,recentLayoffs:8,mAndA:5,restructuring:9,privatization:0 },
+  { id:'hapvida',name:'Hapvida',sector:'healthcare',segment:'Healthcare',employees:69000,headquarters:'Fortaleza, CE',states:['CE','SP','RJ','MG','BA','PE','MA','PA','AM','GO','DF','PR','RS'],unionDispute:false,publicCompany:true,outsourcingRisk:false,recentLayoffs:5,mAndA:10,restructuring:9,privatization:0 },
+  { id:'santander',name:'Santander Brasil',sector:'financial_services',segment:'Financial Services',employees:55646,headquarters:'São Paulo, SP',states:['SP','RJ','MG','RS','PR','BA','PE','CE','DF','SC','GO','ES'],unionDispute:true,publicCompany:true,outsourcingRisk:false,recentLayoffs:6,mAndA:3,restructuring:6,privatization:0 },
+  { id:'verzani-sandrini',name:'Verzani & Sandrini',sector:'services',segment:'Services',employees:45000,headquarters:'São Paulo, SP',states:['SP','RJ','MG','PR','RS','BA','PE','DF','GO','SC','CE'],unionDispute:false,publicCompany:true,outsourcingRisk:true,recentLayoffs:3,mAndA:4,restructuring:3,privatization:0 },
+  { id:'aec',name:'AeC',sector:'services',segment:'Services',employees:30000,headquarters:'Belo Horizonte, MG',states:['MG','SP','BA','PE','PB','SE','CE'],unionDispute:true,publicCompany:false,outsourcingRisk:true,recentLayoffs:5,mAndA:3,restructuring:4,privatization:0 },
+  { id:'mercado-livre',name:'Mercado Livre',sector:'retail',segment:'Retail',employees:33000,headquarters:'São Paulo, SP',states:['SP','RJ','MG','PR','RS','BA','PE','CE','SC','GO','DF'],unionDispute:true,publicCompany:true,outsourcingRisk:false,recentLayoffs:5,mAndA:4,restructuring:4,privatization:0 },
+  { id:'vivo',name:'Vivo (Telefônica Brasil)',sector:'telecom',segment:'Telecom',employees:32728,headquarters:'São Paulo, SP',states:['SP','RJ','MG','RS','PR','BA','PE','CE','DF','SC','GO','ES','PA','MA','AM'],unionDispute:true,publicCompany:true,outsourcingRisk:true,recentLayoffs:5,mAndA:7,restructuring:6,privatization:4 },
+  { id:'magalu',name:'Magazine Luiza',sector:'retail',segment:'Retail',employees:37000,headquarters:'Franca, SP',states:['SP','MG','RJ','PR','RS','BA','PE','CE','GO','DF','SC','MA','PA'],unionDispute:false,publicCompany:true,outsourcingRisk:false,recentLayoffs:5,mAndA:5,restructuring:5,privatization:0 },
+  { id:'latam',name:'LATAM Airlines Brasil',sector:'airlines',segment:'Airlines',employees:22500,headquarters:'São Paulo, SP',states:['SP','RJ','MG','RS','PR','BA','DF','CE','PE','SC','PA','AM','GO'],unionDispute:true,publicCompany:true,outsourcingRisk:false,recentLayoffs:7,mAndA:6,restructuring:8,privatization:0 },
+  { id:'energisa',name:'Energisa',sector:'utilities',segment:'Utilities',employees:18000,headquarters:'Cataguases, MG',states:['MG','MT','MS','TO','PB','SE','AC','RO','RR','SP','GO'],unionDispute:true,publicCompany:true,outsourcingRisk:true,recentLayoffs:3,mAndA:8,restructuring:4,privatization:5 },
+  { id:'azul',name:'Azul Linhas Aéreas',sector:'airlines',segment:'Airlines',employees:15400,headquarters:'Barueri, SP',states:['SP','RJ','MG','RS','PR','BA','DF','CE','PE','SC','PA','AM','GO'],unionDispute:true,publicCompany:true,outsourcingRisk:false,recentLayoffs:9,mAndA:3,restructuring:10,privatization:0 },
+  { id:'tim',name:'TIM Brasil',sector:'telecom',segment:'Telecom',employees:10000,headquarters:'Rio de Janeiro, RJ',states:['RJ','SP','MG','RS','PR','BA','PE','CE','DF','SC','GO','PA'],unionDispute:false,publicCompany:true,outsourcingRisk:true,recentLayoffs:4,mAndA:8,restructuring:5,privatization:0 },
+  { id:'nubank',name:'Nubank',sector:'financial_services',segment:'Financial Services',employees:8716,headquarters:'São Paulo, SP',states:['SP','RJ','MG','PE','DF'],unionDispute:true,publicCompany:true,outsourcingRisk:false,recentLayoffs:7,mAndA:2,restructuring:5,privatization:0 },
   { id:'uol',name:'UOL (PagSeguro/PagBank)',sector:'financial_services',segment:'Financial Services',employees:7000,headquarters:'São Paulo, SP',cargoDiversity:6,multiState:6,unionActivity:3,operationalRatio:0.40,seniorityVariance:4,recentLayoffs:5,mAndA:4,restructuring:5,privatization:0 },
   { id:'ifood',name:'iFood',sector:'retail',segment:'Retail',employees:6000,headquarters:'São Paulo, SP',cargoDiversity:6,multiState:9,unionActivity:4,operationalRatio:0.30,seniorityVariance:3,recentLayoffs:7,mAndA:3,restructuring:5,privatization:0 },
   { id:'c6bank',name:'C6 Bank',sector:'financial_services',segment:'Financial Services',employees:5500,headquarters:'São Paulo, SP',cargoDiversity:5,multiState:3,unionActivity:2,operationalRatio:0.30,seniorityVariance:3,recentLayoffs:6,mAndA:2,restructuring:4,privatization:0 },
