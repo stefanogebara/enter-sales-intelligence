@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { ChevronRight, ChevronLeft, ArrowRight } from 'lucide-react';
 import { companies } from '../data/companies';
 
-const SLIDES = [HeroSlide, MethodSlide, PipelineSlide];
+const SLIDES = [HeroSlide, ProblemSlide, OpportunitySlide, ScoreSlide, WhatItDoes, PipelineSlide];
 
 export default function Presentation({ onEnterPlatform }) {
   const [slide, setSlide] = useState(0);
@@ -11,18 +11,18 @@ export default function Presentation({ onEnterPlatform }) {
 
   return (
     <div className="min-h-screen bg-enter-black flex flex-col">
-      {/* Top banner — Enter style gold bar */}
+      {/* Gold bar */}
       <div className="bg-enter-gold flex items-center justify-between px-8 py-3">
         <span className="font-mono text-label uppercase text-enter-black">
           Case Growth · Summer 2026
         </span>
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-3">
           {SLIDES.map((_, i) => (
             <button
               key={i}
               onClick={() => setSlide(i)}
-              className={`w-2 h-2 rounded-full transition-all cursor-pointer ${
-                i === slide ? 'bg-enter-black w-8' : i < slide ? 'bg-enter-black/40' : 'bg-enter-black/20'
+              className={`h-2 rounded-full transition-all cursor-pointer ${
+                i === slide ? 'bg-enter-black w-8' : i < slide ? 'bg-enter-black/40 w-2' : 'bg-enter-black/20 w-2'
               }`}
               aria-label={`Slide ${i + 1}`}
             />
@@ -38,7 +38,7 @@ export default function Presentation({ onEnterPlatform }) {
 
       {/* Slide */}
       <div className="flex-1 flex items-center justify-center" key={slide}>
-        <div className="w-full max-w-[1200px] px-12 animate-fadeIn">
+        <div className="w-full max-w-[1100px] px-12 animate-fadeIn">
           <Slide onEnter={onEnterPlatform} />
         </div>
       </div>
@@ -46,30 +46,22 @@ export default function Presentation({ onEnterPlatform }) {
       {/* Bottom nav */}
       <div className="flex items-center justify-between px-12 py-6">
         <button
-          onClick={() => slide > 0 && setSlide(slide - 1)}
+          onClick={() => slide > 0 && setSlide(s => s - 1)}
           className={`font-mono text-label uppercase flex items-center gap-2 cursor-pointer transition-colors ${
             slide === 0 ? 'text-enter-gray-800' : 'text-enter-gray-500 hover:text-enter-white'
           }`}
         >
           <ChevronLeft className="w-4 h-4" /> Anterior
         </button>
-
-        <span className="font-mono text-caption text-enter-gray-600">
-          {slide + 1} / {SLIDES.length}
-        </span>
-
+        <span className="font-mono text-caption text-enter-gray-600">{slide + 1} / {SLIDES.length}</span>
         {isLast ? (
-          <button
-            onClick={onEnterPlatform}
-            className="font-mono text-label uppercase flex items-center gap-2 border border-enter-white text-enter-white px-8 py-4 rounded-enter hover:bg-enter-white hover:text-enter-black transition-colors cursor-pointer"
-          >
+          <button onClick={onEnterPlatform}
+            className="font-mono text-label uppercase flex items-center gap-2 border border-enter-white text-enter-white px-8 py-4 rounded-enter hover:bg-enter-white hover:text-enter-black transition-colors cursor-pointer">
             Entrar na Plataforma <ArrowRight className="w-4 h-4" />
           </button>
         ) : (
-          <button
-            onClick={() => setSlide(slide + 1)}
-            className="font-mono text-label uppercase flex items-center gap-2 text-enter-gray-500 hover:text-enter-white transition-colors cursor-pointer"
-          >
+          <button onClick={() => setSlide(s => s + 1)}
+            className="font-mono text-label uppercase flex items-center gap-2 text-enter-gray-500 hover:text-enter-white transition-colors cursor-pointer">
             Próximo <ChevronRight className="w-4 h-4" />
           </button>
         )}
@@ -78,29 +70,18 @@ export default function Presentation({ onEnterPlatform }) {
   );
 }
 
-// ─── SLIDE 1: HERO ───
+// ─── 1. HERO ───
 function HeroSlide() {
   const qualified = companies.filter(c => c.score.verdict === 'QUALIFIED').length;
-
   return (
     <div>
-      <p className="font-mono text-label uppercase text-enter-gold mb-12">
-        Stefano Gebara
-      </p>
-
-      <h1 className="text-display text-enter-white mb-4">
-        Qualificação Trabalhista
-      </h1>
-      <h2 className="text-display text-enter-gold">
-        com Sales Intelligence
-      </h2>
-
+      <p className="font-mono text-label uppercase text-enter-gold mb-12">Stefano Gebara</p>
+      <h1 className="text-display text-enter-white mb-4">Qualificação Trabalhista</h1>
+      <h2 className="text-display text-enter-gold">com Sales Intelligence</h2>
       <p className="text-body-lg text-enter-gray-400 mt-12 max-w-2xl">
-        Plataforma que identifica, qualifica e prioriza automaticamente
-        quais empresas da base Enter têm volume suficiente de contencioso
-        trabalhista para justificar contratos de US$500k+/ano.
+        Uma plataforma que analisa automaticamente quais clientes da Enter
+        têm maior potencial para o novo produto de contencioso trabalhista.
       </p>
-
       <div className="flex items-center gap-16 mt-16">
         <Stat value={companies.length} label="empresas" />
         <Stat value={qualified} label="qualificadas" />
@@ -111,60 +92,159 @@ function HeroSlide() {
   );
 }
 
-// ─── SLIDE 2: METHODOLOGY ───
-function MethodSlide() {
+// ─── 2. O PROBLEMA ───
+function ProblemSlide() {
   return (
     <div>
-      <p className="font-mono text-label uppercase text-enter-gold mb-12">
-        Metodologia
-      </p>
+      <p className="font-mono text-label uppercase text-enter-gold mb-12">O Problema</p>
+      <h2 className="text-title-lg text-enter-white mb-12">
+        No Brasil, funcionários podem<br />
+        <span className="text-enter-gold">processar suas empresas</span>
+      </h2>
 
+      <div className="grid grid-cols-3 gap-12">
+        <SimpleCard
+          number="2.4M"
+          title="Processos novos por ano"
+          desc="Funcionários entram na justiça contra as empresas por horas extras não pagas, demissões injustas, condições de trabalho, etc."
+        />
+        <SimpleCard
+          number="R$50.6B"
+          title="Custo total para empresas"
+          desc="Em 2025, empresas brasileiras pagaram mais de 50 bilhões de reais em processos trabalhistas. É o recorde histórico."
+        />
+        <SimpleCard
+          number="~80%"
+          title="Funcionário ganha"
+          desc="Na maioria dos casos, o funcionário ganha (total ou parcialmente). As empresas precisam se defender bem em cada processo."
+        />
+      </div>
+
+      <p className="text-body-lg text-enter-gray-500 mt-12">
+        Empresas grandes como Bradesco, Itaú e Vivo recebem{' '}
+        <span className="text-enter-white">milhares de processos por ano</span>. Gerenciar tudo isso manualmente é impossível.
+      </p>
+    </div>
+  );
+}
+
+// ─── 3. A OPORTUNIDADE ───
+function OpportunitySlide() {
+  return (
+    <div>
+      <p className="font-mono text-label uppercase text-enter-gold mb-12">A Oportunidade</p>
+      <h2 className="text-title-lg text-enter-white mb-12">
+        A Enter já atende esses clientes.<br />
+        <span className="text-enter-gold">Agora quer vender mais.</span>
+      </h2>
+
+      <div className="grid grid-cols-2 gap-16">
+        <div>
+          <p className="font-mono text-label uppercase text-enter-gray-500 mb-4">Hoje</p>
+          <p className="text-title-sm text-enter-white mb-3">Produto Consumerista</p>
+          <p className="text-body-lg text-enter-gray-400">
+            A Enter usa IA para defender empresas em processos de consumidores
+            (quando um cliente processa um banco, por exemplo).
+            Já atende Itaú, Bradesco, Nubank, LATAM, Mercado Livre e outros.
+          </p>
+        </div>
+        <div>
+          <p className="font-mono text-label uppercase text-enter-gold mb-4">Novo</p>
+          <p className="text-title-sm text-enter-gold mb-3">Produto Trabalhista</p>
+          <p className="text-body-lg text-enter-gray-400">
+            A mesma tecnologia, agora para processos trabalhistas
+            (quando um funcionário processa a empresa).
+            É um upsell — vender algo novo para quem já é cliente.
+          </p>
+        </div>
+      </div>
+
+      <div className="mt-12 border-t border-enter-gray-800 pt-8">
+        <p className="text-body-lg text-enter-gray-500">
+          <span className="text-enter-white">A pergunta central:</span>{' '}
+          Quais desses clientes têm volume suficiente de processos trabalhistas
+          para justificar um contrato de no mínimo{' '}
+          <span className="text-enter-gold font-mono">US$500k/ano</span>?
+        </p>
+      </div>
+    </div>
+  );
+}
+
+// ─── 4. COMO QUALIFICAR ───
+function ScoreSlide() {
+  return (
+    <div>
+      <p className="font-mono text-label uppercase text-enter-gold mb-12">Como Qualificar</p>
       <h2 className="text-title-lg text-enter-white mb-16">
-        Score composto em<br />
-        <span className="text-enter-gold">três dimensões verificáveis</span>
+        Um score de 0 a 100 baseado em<br />
+        <span className="text-enter-gold">dados públicos verificáveis</span>
       </h2>
 
       <div className="grid grid-cols-3 gap-16">
         <Dimension
           pct="30%" title="Volume" color="border-blue-500"
-          lines={['Funcionários × taxa de litígio', 'Calibrado com TST Ranking', 'Bradesco: 88% accuracy']}
+          desc="Quantos processos a empresa provavelmente recebe?"
+          lines={['Número de funcionários', 'Taxa de processos do setor', 'Verificado com dados do TST']}
         />
         <Dimension
           pct="40%" title="Complexidade" color="border-enter-gold"
-          lines={['Presença estadual', 'Disputa sindical (sim/não)', 'Terceirização · Capital aberto', 'Complexidade do setor']}
+          desc="Quão complicado é o contencioso dessa empresa?"
+          lines={['Em quantos estados opera?', 'Tem sindicato ativo brigando?', 'Usa muita terceirização?', 'É empresa de capital aberto?']}
         />
         <Dimension
           pct="30%" title="Timing" color="border-orange-500"
-          lines={['Layoffs recentes', 'M&A · Reestruturação', 'Privatização']}
+          desc="Aconteceu algo recente que gera mais processos?"
+          lines={['Demissões em massa recentes', 'Fusão ou aquisição de empresa', 'Reestruturação corporativa']}
         />
       </div>
     </div>
   );
 }
 
-// ─── SLIDE 3: PIPELINE ───
+// ─── 5. O QUE A PLATAFORMA FAZ ───
+function WhatItDoes() {
+  return (
+    <div>
+      <p className="font-mono text-label uppercase text-enter-gold mb-12">O Que Ela Faz</p>
+      <h2 className="text-title-lg text-enter-white mb-16">
+        4 etapas automáticas para<br />
+        <span className="text-enter-gold">cada empresa da base</span>
+      </h2>
+
+      <div className="space-y-8">
+        <Step n="01" title="Ranking" color="text-blue-400"
+          desc="Mostra todas as 36 empresas da base Enter ordenadas pelo score. Você vê de cara quem tem mais potencial." />
+        <Step n="02" title="Qualificação com IA" color="text-enter-gold"
+          desc="Clica numa empresa e a IA pesquisa na internet em tempo real: quantos funcionários tem, se teve demissões recentes, se tem sindicato ativo, quanto gasta com processos." />
+        <Step n="03" title="Perguntas de Discovery" color="text-orange-400"
+          desc="Gera 8 perguntas prontas para fazer numa reunião com o diretor jurídico da empresa. Tipo: 'Como vocês gerenciam os processos trabalhistas hoje? Quanto gastam por ano?'" />
+        <Step n="04" title="Pitch para o CFO" color="text-verdict-qualified"
+          desc="Escreve 3 parágrafos persuasivos para enviar ao CFO (diretor financeiro) da empresa, explicando por que ele deveria contratar a Enter para gerenciar o contencioso trabalhista." />
+      </div>
+    </div>
+  );
+}
+
+// ─── 6. PIPELINE → PLATAFORMA ───
 function PipelineSlide({ onEnter }) {
   return (
     <div className="text-center">
-      <p className="font-mono text-label uppercase text-enter-gold mb-12">
-        A Plataforma
-      </p>
-
+      <p className="font-mono text-label uppercase text-enter-gold mb-12">Vamos ver?</p>
       <h2 className="text-title-lg text-enter-white mb-6">
-        Pipeline automático de<br />
-        <span className="text-enter-gold">Sales Intelligence</span>
+        Tudo isso funcionando<br />
+        <span className="text-enter-gold">ao vivo</span>
       </h2>
-
       <p className="text-body-lg text-enter-gray-400 mb-16 max-w-xl mx-auto">
-        Selecione qualquer empresa e o sistema executa o pipeline completo
-        com pesquisa web em tempo real.
+        Selecione qualquer empresa e veja o pipeline completo
+        rodar em tempo real com dados da internet.
       </p>
 
       <div className="flex items-center justify-center gap-6 mb-16">
         {[
           { n: '01', label: 'Dashboard', sub: `${companies.length} empresas` },
-          { n: '02', label: 'Qualificação', sub: 'Perplexity + web search' },
-          { n: '03', label: 'Discovery', sub: '8 perguntas' },
+          { n: '02', label: 'Qualificação', sub: 'pesquisa web ao vivo' },
+          { n: '03', label: 'Discovery', sub: '8 perguntas prontas' },
           { n: '04', label: 'Pitch CFO', sub: '3 parágrafos' },
         ].map(({ n, label, sub }, i) => (
           <div key={n} className="flex items-center gap-6">
@@ -178,10 +258,8 @@ function PipelineSlide({ onEnter }) {
         ))}
       </div>
 
-      <button
-        onClick={onEnter}
-        className="font-mono text-label uppercase border border-enter-white text-enter-white px-12 py-5 rounded-enter hover:bg-enter-white hover:text-enter-black transition-colors cursor-pointer"
-      >
+      <button onClick={onEnter}
+        className="font-mono text-label uppercase border border-enter-white text-enter-white px-12 py-5 rounded-enter hover:bg-enter-white hover:text-enter-black transition-colors cursor-pointer">
         Entrar na Plataforma
       </button>
     </div>
@@ -198,17 +276,40 @@ function Stat({ value, label, mono }) {
   );
 }
 
-function Dimension({ pct, title, color, lines }) {
+function SimpleCard({ number, title, desc }) {
+  return (
+    <div>
+      <p className="text-title-md text-enter-gold font-mono mb-2">{number}</p>
+      <p className="text-body-md text-enter-white font-medium mb-2">{title}</p>
+      <p className="text-body-lg text-enter-gray-500">{desc}</p>
+    </div>
+  );
+}
+
+function Dimension({ pct, title, color, desc, lines }) {
   return (
     <div className={`border-t-2 ${color} pt-6`}>
-      <div className="flex items-baseline gap-2 mb-4">
+      <div className="flex items-baseline gap-2 mb-2">
         <span className="font-mono text-caption text-enter-gray-500">{pct}</span>
         <h3 className="text-title-sm text-enter-white">{title}</h3>
       </div>
-      <div className="space-y-2">
+      <p className="text-body-lg text-enter-gray-500 mb-4">{desc}</p>
+      <div className="space-y-1.5">
         {lines.map((l, i) => (
-          <p key={i} className="text-body-lg text-enter-gray-400">{l}</p>
+          <p key={i} className="text-body-lg text-enter-gray-400">— {l}</p>
         ))}
+      </div>
+    </div>
+  );
+}
+
+function Step({ n, title, color, desc }) {
+  return (
+    <div className="flex items-start gap-6">
+      <span className={`font-mono text-title-sm ${color} flex-shrink-0 w-8`}>{n}</span>
+      <div>
+        <h3 className={`text-title-sm ${color} mb-1`}>{title}</h3>
+        <p className="text-body-lg text-enter-gray-400">{desc}</p>
       </div>
     </div>
   );
