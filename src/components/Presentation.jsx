@@ -281,25 +281,36 @@ function PitchSlide() {
       <h2 className="text-title-md text-enter-white mb-2">
         Para o <span className="text-enter-gold">CFO do Bradesco</span>
       </h2>
-      <p className="text-caption text-enter-gray-600 mb-8">3 parágrafos · tom executivo · cria urgência</p>
+      <p className="text-caption text-enter-gray-600 mb-8">estrutura: dor → solução → urgência</p>
 
-      <div className="space-y-6 max-w-3xl">
-        <p className="text-body-lg text-enter-gray-300 leading-relaxed">
-          A reestruturação que o Bradesco está conduzindo — 2.200 desligamentos, 390 agências fechadas e um PDV ativo — é estrategicamente necessária,
-          mas vai gerar uma onda de processos trabalhistas nos próximos 12 a 18 meses. Com ~8.400 novos casos por ano e um custo estimado de R$250M+ anuais em
-          contencioso trabalhista, a pergunta não é se o volume vai crescer, mas se vocês vão gerenciar esse crescimento com a mesma estrutura fragmentada de hoje.
-        </p>
-        <p className="text-body-lg text-enter-gray-300 leading-relaxed">
-          A Enter já provou o que faz no consumerista de vocês. No trabalhista, a mesma tecnologia — IA que analisa documentos, detecta fraude, gera
-          contestações e recomenda acordos — pode reduzir o custo por processo em 30% e centralizar a gestão de todos os escritórios numa plataforma única.
-          Pares do setor que já adotaram esse modelo reportam redução de 25% na surpresa de provisão, o delta entre o que foi reservado e o que foi
-          efetivamente pago. Isso libera capital do balanço.
-        </p>
-        <p className="text-body-lg text-enter-gray-300 leading-relaxed">
-          O timing é agora. Os processos das demissões de 2024 vão começar a chegar no TRT nos próximos meses. Montar essa operação depois que o volume
-          explodir custa 3x mais do que antecipar. Vocês já são clientes Enter — a integração é rápida e o time jurídico já conhece a plataforma.
-          Podemos mostrar uma simulação com os números reais do Bradesco essa semana.
-        </p>
+      <div className="space-y-8 max-w-3xl">
+        <div>
+          <p className="font-mono text-label uppercase text-orange-400 mb-3">§1 — A dor</p>
+          <p className="text-body-lg text-enter-gray-300 leading-relaxed">
+            Vocês demitiram 2.200 pessoas e fecharam 390 agências no último ano.
+            Isso vai gerar uma onda de processos trabalhistas nos próximos meses.
+            São ~8.400 casos novos por ano, custando mais de R$250 milhões.
+            A pergunta não é se vai crescer — é se vocês estão preparados pra absorver esse crescimento.
+          </p>
+        </div>
+        <div>
+          <p className="font-mono text-label uppercase text-blue-400 mb-3">§2 — A solução</p>
+          <p className="text-body-lg text-enter-gray-300 leading-relaxed">
+            Vocês já usam a Enter no consumerista. A mesma IA agora faz no trabalhista:
+            analisa documentos, gera defesas automáticas, recomenda acordos e centraliza
+            todos os escritórios numa plataforma só. Resultado: 30% menos custo por processo
+            e previsibilidade no quanto vai gastar — em vez de surpresas no balanço.
+          </p>
+        </div>
+        <div>
+          <p className="font-mono text-label uppercase text-verdict-qualified mb-3">§3 — A urgência</p>
+          <p className="text-body-lg text-enter-gray-300 leading-relaxed">
+            Os processos das demissões de 2024 vão começar a chegar agora.
+            Montar essa operação depois que o volume explodir custa 3x mais.
+            Vocês já são clientes Enter — a integração é rápida.
+            Podemos mostrar uma simulação com os números reais do Bradesco essa semana.
+          </p>
+        </div>
       </div>
     </div>
   );
