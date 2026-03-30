@@ -1,0 +1,11 @@
+{
+  "buildCommand": "npx vite build",
+  "outputDirectory": "dist",
+  "rewrites": [
+    { "source": "/api/companies", "destination": "/api/companies" },
+    { "source": "/api/qualify", "destination": "/api/qualify" },
+    { "source": "/api/discovery", "destination": "/api/discovery" },
+    { "source": "/api/pitch", "destination": "/api/pitch" },
+    { "source": "/(.*)", "destination": "/index.html" }
+  ]
+}
