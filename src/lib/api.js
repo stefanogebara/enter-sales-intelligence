@@ -43,3 +43,10 @@ export async function runSimulation(companyId) {
     body: JSON.stringify({ companyId }),
   });
 }
+
+export async function queryDataJud(companyName) {
+  return request('/datajud', {
+    method: 'POST',
+    body: JSON.stringify({ companyName }),
+  });
+}
