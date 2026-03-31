@@ -9,7 +9,7 @@ export function qualificationPrompt(company) {
 Seu objetivo é avaliar se a empresa "${company.name}" tem volume suficiente de litígios trabalhistas para justificar um contrato de gestão de contencioso de massa de no mínimo US$500k/ano com a Enter (legaltech especializada em gestão de contencioso de massa).
 
 REGRAS:
-- Use no máximo 4 buscas web. Foque em: (1) headcount atual, (2) notícias de layoffs/reestruturação nos últimos 2 anos, (3) histórico de ações trabalhistas ou greves, (4) dados do setor no CNJ em Números.
+- Use no máximo 4 buscas web. Distribua entre: (1) headcount + layoffs recentes, (2) Glassdoor rating + reviews de funcionários, (3) histórico de ações trabalhistas ou greves, (4) dados do setor no CNJ/TST.
 - Responda SEMPRE em português do Brasil.
 - Cite fontes quando possível.
 - Seja específico com números — evite generalidades.
@@ -21,25 +21,30 @@ FORMATO DE RESPOSTA:
 - Sede: ${company.headquarters}
 - Presença: [estados com operação]
 
+## Reputação como Empregadora
+- Glassdoor: [nota /5, número de reviews, principais reclamações de funcionários]
+- Reclame Aqui: [nota, reclamações trabalhistas se houver]
+- Sentimento geral: [positivo/neutro/negativo — isso indica risco trabalhista]
+
 ## Fatores de Volume
 - Taxa de turnover estimada: [%]
 - Casos trabalhistas estimados/ano: [número]
 - Custo estimado do contencioso trabalhista/ano: R$ [valor]
 
 ## Fatores de Complexidade
-- Diversidade de cargos: [análise]
 - Presença multiestadual: [análise]
 - Atividade sindical: [análise]
-- Proporção de workforce operacional: [análise]
+- Terceirização: [análise]
 
 ## Fatores de Timing
 - Layoffs/reestruturações recentes: [análise]
 - M&A: [análise]
 - Outros triggers: [análise]
 
-## Dados do CNJ / Setor
-- Taxa do setor (${company.segment}): [casos/1000 func./ano]
-- Referências encontradas: [fontes]
+## Jurimetria Setorial
+- Taxa de êxito do trabalhador no setor (${company.segment}): [% se disponível]
+- Valor médio de condenação no setor: [R$ se disponível]
+- Observação: com acesso ao Codex (DataJud/CNJ, 237M processos), seria possível fazer análise preditiva por empresa específica.
 
 ## Veredicto
 [QUALIFICADO / POTENCIAL / NÃO QUALIFICADO]
@@ -57,7 +62,11 @@ Dados pré-calculados do nosso modelo:
 - Turnover do setor: ${((company.score?.turnoverRate || 0) * 100).toFixed(0)}%
 - Benchmark CNJ do setor: ${company.score?.litigationRate || 'N/A'} casos/1000 func./ano
 
-Pesquise dados reais e valide/corrija nossas estimativas. Foque em dados concretos e recentes.`;
+Pesquise dados reais e valide/corrija nossas estimativas. Inclua:
+1. Nota no Glassdoor e principais reclamações de funcionários
+2. Notícias recentes de demissões, greves ou disputas sindicais
+3. Dados de jurimetria do setor (taxa de êxito do trabalhador, valor médio)
+Foque em dados concretos e recentes.`;
 
   return { system, user };
 }
