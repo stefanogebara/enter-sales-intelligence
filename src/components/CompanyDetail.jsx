@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { ArrowLeft, Users, MapPin, Building2, Briefcase, MessageSquare, Presentation, Loader2, Copy, Check, Zap } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { ArrowLeft, Users, MapPin, Building2, Briefcase, MessageSquare, Presentation, Loader2, Copy, Check, Zap, Database } from 'lucide-react';
 import Markdown from 'react-markdown';
 import ScoreGauge from './ScoreGauge';
 import ScoreBreakdown from './ScoreBreakdown';
@@ -127,6 +127,98 @@ function OverviewTab({ company }) {
             { label: 'Reestruturação', value: score.timingFactors.restructuring, max: 10 },
             { label: 'Privatização', value: score.timingFactors.privatization, max: 10 },
           ]} />
+        </div>
+      </div>
+
+      {/* DataJud CNJ Section */}
+      <div className="col-span-2 mt-6 pt-6 border-t border-enter-gray-800">
+        <DataJudSection />
+      </div>
+    </div>
+  );
+}
+
+function DataJudSection() {
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(false);
+
+  const load = () => {
+    setLoading(true);
+    fetch('/api/datajud', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ region: 'trt2' }),
+    })
+      .then((r) => r.json())
+      .then((d) => { setData(d); setLoading(false); })
+      .catch(() => setLoading(false));
+  };
+
+  if (!data && !loading) {
+    return (
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <Database className="w-5 h-5 text-enter-gold" />
+          <div>
+            <p className="text-sm font-semibold text-enter-white">DataJud / CNJ</p>
+            <p className="text-xs text-enter-gray-500">237M+ processos — dados reais da Justiça do Trabalho</p>
+          </div>
+        </div>
+        <button onClick={load} className="font-mono text-xs uppercase text-enter-gold border border-enter-gold/30 px-4 py-2 rounded-enter hover:bg-enter-gold/10 transition-colors cursor-pointer">
+          Carregar dados
+        </button>
+      </div>
+    );
+  }
+
+  if (loading) {
+    return (
+      <div className="flex items-center gap-3">
+        <Loader2 className="w-4 h-4 text-enter-gold animate-spin" />
+        <p className="text-xs text-enter-gray-500">Consultando DataJud/CNJ...</p>
+      </div>
+    );
+  }
+
+  return (
+    <div>
+      <div className="flex items-center gap-2 mb-4">
+        <Database className="w-4 h-4 text-enter-gold" />
+        <h4 className="text-xs font-semibold text-enter-gold uppercase tracking-wider">
+          DataJud / CNJ — {data.region} (São Paulo)
+        </h4>
+        <span className="text-[10px] text-enter-gray-600 font-mono">tempo real</span>
+      </div>
+
+      <div className="grid grid-cols-3 gap-4">
+        {/* Top subjects */}
+        <div className="col-span-2">
+          <p className="text-xs text-enter-gray-500 mb-2">Principais assuntos trabalhistas</p>
+          <div className="space-y-1.5">
+            {data.topSubjects?.slice(0, 6).map((s, i) => (
+              <div key={i} className="flex items-center gap-3">
+                <span className="text-xs text-enter-gray-300 flex-1 truncate">{s.name}</span>
+                <div className="w-32 bg-enter-gray-800 rounded-full h-1">
+                  <div className="bg-enter-gold rounded-full h-1" style={{ width: `${(s.count / (data.topSubjects[0]?.count || 1)) * 100}%` }} />
+                </div>
+                <span className="text-xs font-mono text-enter-gray-400 w-20 text-right">{(s.count / 1000).toFixed(0)}k</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Case types */}
+        <div>
+          <p className="text-xs text-enter-gray-500 mb-2">Tipos de ação</p>
+          <div className="space-y-1.5">
+            {data.caseTypes?.slice(0, 4).map((c, i) => (
+              <div key={i}>
+                <span className="text-xs text-enter-gray-300">{c.name.replace('Trabalhista', 'Trab.').replace('Ordinário', 'Ord.').replace('Sumaríssimo', 'Sum.')}</span>
+                <span className="text-xs font-mono text-enter-gray-500 ml-2">{(c.count / 1000).toFixed(0)}k</span>
+              </div>
+            ))}
+          </div>
+          <p className="text-[10px] text-enter-gray-600 mt-3">Fonte: {data.source}</p>
         </div>
       </div>
     </div>
