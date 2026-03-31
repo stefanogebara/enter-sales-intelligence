@@ -1,14 +1,19 @@
 import { useState, useMemo } from 'react';
-import { Search, Building2, Users, AlertTriangle, TrendingUp } from 'lucide-react';
-import { companies, segments } from '../data/companies';
+import { Search, Building2, Users, AlertTriangle, TrendingUp, SlidersHorizontal } from 'lucide-react';
+import { companies, segments, recalcWithWeights, DEFAULT_WEIGHTS } from '../data/companies';
 import CompanyCard from './CompanyCard';
 
 export default function Dashboard({ onSelectCompany }) {
   const [search, setSearch] = useState('');
   const [activeSegment, setActiveSegment] = useState('All');
+  const [showWeights, setShowWeights] = useState(false);
+  const [weights, setWeights] = useState(DEFAULT_WEIGHTS);
+
+  const isCustom = weights.volume !== 0.3 || weights.complexity !== 0.4 || weights.timing !== 0.3;
+  const allCompanies = useMemo(() => isCustom ? recalcWithWeights(weights) : companies, [weights, isCustom]);
 
   const filtered = useMemo(() => {
-    let result = companies;
+    let result = allCompanies;
     if (activeSegment !== 'All') {
       result = result.filter((c) => c.segment === activeSegment);
     }
@@ -23,10 +28,16 @@ export default function Dashboard({ onSelectCompany }) {
     return result;
   }, [search, activeSegment]);
 
-  const qualified = companies.filter((c) => c.score.verdict === 'QUALIFIED').length;
-  const potential = companies.filter((c) => c.score.verdict === 'POTENTIAL').length;
-  const totalEmployees = companies.reduce((sum, c) => sum + c.employees, 0);
-  const totalEstCases = companies.reduce((sum, c) => sum + c.score.estimatedCases, 0);
+  const qualified = allCompanies.filter((c) => c.score.verdict === 'QUALIFIED').length;
+  const potential = allCompanies.filter((c) => c.score.verdict === 'POTENTIAL').length;
+  const totalEmployees = allCompanies.reduce((sum, c) => sum + c.employees, 0);
+  const totalEstCases = allCompanies.reduce((sum, c) => sum + c.score.estimatedCases, 0);
+
+  const updateWeight = (key, val) => {
+    const raw = { ...weights, [key]: val };
+    const sum = raw.volume + raw.complexity + raw.timing;
+    setWeights({ volume: raw.volume / sum, complexity: raw.complexity / sum, timing: raw.timing / sum });
+  };
 
   return (
     <div className="p-6 max-w-[1400px] mx-auto">
@@ -71,6 +82,30 @@ export default function Dashboard({ onSelectCompany }) {
           color="text-orange-400"
           iconBg="bg-orange-500/10"
         />
+      </div>
+
+      {/* Weight controls */}
+      <div className="mb-6">
+        <button
+          onClick={() => setShowWeights(!showWeights)}
+          className={`flex items-center gap-2 text-xs font-mono uppercase cursor-pointer transition-colors ${
+            showWeights ? 'text-enter-gold' : 'text-enter-gray-600 hover:text-enter-gray-400'
+          }`}
+        >
+          <SlidersHorizontal className="w-3.5 h-3.5" />
+          {isCustom ? `Pesos: V${Math.round(weights.volume*100)}% C${Math.round(weights.complexity*100)}% T${Math.round(weights.timing*100)}%` : 'Ajustar pesos do score'}
+        </button>
+
+        {showWeights && (
+          <div className="enter-card p-4 mt-3 grid grid-cols-3 gap-6">
+            <WeightSlider label="Volume" value={weights.volume} color="bg-blue-500"
+              onChange={(v) => updateWeight('volume', v)} />
+            <WeightSlider label="Complexidade" value={weights.complexity} color="bg-enter-gold"
+              onChange={(v) => updateWeight('complexity', v)} />
+            <WeightSlider label="Timing" value={weights.timing} color="bg-orange-500"
+              onChange={(v) => updateWeight('timing', v)} />
+          </div>
+        )}
       </div>
 
       {/* Filters */}
@@ -140,6 +175,24 @@ function SummaryCard({ icon: Icon, label, value, sub, color, iconBg }) {
           </p>
         </div>
       </div>
+    </div>
+  );
+}
+
+function WeightSlider({ label, value, color, onChange }) {
+  const pct = Math.round(value * 100);
+  return (
+    <div>
+      <div className="flex items-center justify-between mb-1.5">
+        <span className="text-xs text-enter-gray-400">{label}</span>
+        <span className="text-xs font-mono text-enter-white">{pct}%</span>
+      </div>
+      <input
+        type="range" min="5" max="80" value={pct}
+        onChange={(e) => onChange(Number(e.target.value) / 100)}
+        className="w-full h-1 rounded-full appearance-none cursor-pointer"
+        style={{ accentColor: color === 'bg-enter-gold' ? '#FFAE35' : color === 'bg-blue-500' ? '#3B82F6' : '#F97316' }}
+      />
     </div>
   );
 }

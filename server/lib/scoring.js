@@ -70,7 +70,9 @@ const SECTOR_COMPLEXITY = {
 function clamp(v, lo, hi) { return Math.max(lo, Math.min(hi, v)); }
 function norm(v, lo, hi) { return hi === lo ? 0 : clamp(((v - lo) / (hi - lo)) * 100, 0, 100); }
 
-export function calculateScore(company) {
+const DEFAULT_WEIGHTS = { volume: 0.3, complexity: 0.4, timing: 0.3 };
+
+export function calculateScore(company, weights = DEFAULT_WEIGHTS) {
   const litRate = SECTOR_LITIGATION_RATE[company.sector] || 25;
   const turnover = SECTOR_TURNOVER[company.sector] || 0.20;
   const avgCost = AVG_CASE_COST_BRL[company.sector] || 22000;
@@ -118,7 +120,8 @@ export function calculateScore(company) {
   const timingRaw = norm(tmMax * 0.7 + tmAvg * 0.3, 0, 10);
 
   // --- Composite ---
-  const total = Math.round(volumeRaw * 0.3 + complexityRaw * 0.4 + timingRaw * 0.3);
+  const w = weights || DEFAULT_WEIGHTS;
+  const total = Math.round(volumeRaw * w.volume + complexityRaw * w.complexity + timingRaw * w.timing);
 
   let verdict;
   if (total >= 65) verdict = 'QUALIFIED';

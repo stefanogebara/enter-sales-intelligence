@@ -28,7 +28,9 @@ const SECTOR_CX = {
 function clamp(v, lo, hi) { return Math.max(lo, Math.min(hi, v)); }
 function norm(v, lo, hi) { return hi === lo ? 0 : clamp(((v - lo) / (hi - lo)) * 100, 0, 100); }
 
-function calcScore(c) {
+export const DEFAULT_WEIGHTS = { volume: 0.3, complexity: 0.4, timing: 0.3 };
+
+export function calcScore(c, weights = DEFAULT_WEIGHTS) {
   const litR = SECTOR_LIT_RATE[c.sector] || 25;
   const t = SECTOR_TURNOVER[c.sector] || 0.20;
   const avgC = AVG_CASE_COST[c.sector] || 22000;
@@ -63,7 +65,8 @@ function calcScore(c) {
   const tmMax = Math.max(...Object.values(tmFactors));
   const tmAvg = Object.values(tmFactors).reduce((a, b) => a + b, 0) / 4;
   const tmRaw = norm(tmMax * 0.7 + tmAvg * 0.3, 0, 10);
-  const total = Math.round(volRaw * 0.3 + cxRaw * 0.4 + tmRaw * 0.3);
+  const w = weights || DEFAULT_WEIGHTS;
+  const total = Math.round(volRaw * w.volume + cxRaw * w.complexity + tmRaw * w.timing);
   let verdict;
   if (total >= 65) verdict = 'QUALIFIED';
   else if (total >= 40) verdict = 'POTENTIAL';
@@ -119,9 +122,17 @@ const rawCompanies = [
   { id:'airbnb',name:'Airbnb',sector:'tech',segment:'Tech',employees:500,headquarters:'São Paulo, SP',states:['SP'],unionDispute:false,publicCompany:true,outsourcingRisk:false,recentLayoffs:4,mAndA:1,restructuring:3,privatization:0 },
 ];
 
+export { rawCompanies };
+
 export const companies = rawCompanies
   .map((c) => ({ ...c, score: calcScore(c) }))
   .sort((a, b) => b.score.total - a.score.total);
+
+export function recalcWithWeights(weights) {
+  return rawCompanies
+    .map((c) => ({ ...c, score: calcScore(c, weights) }))
+    .sort((a, b) => b.score.total - a.score.total);
+}
 
 export const segments = [...new Set(rawCompanies.map((c) => c.segment))].sort();
 
