@@ -48,7 +48,13 @@ export default function App() {
       try {
         const apiCall = { qualify: qualifyCompany, discovery: generateDiscovery, pitch: generatePitch, simulate: runSimulation }[type];
         const result = await apiCall(id);
-        updateAnalysis(id, type, { loading: false, data: type === 'simulate' ? result : (result.text || result.content || JSON.stringify(result, null, 2)) });
+        if (type === 'simulate') {
+          updateAnalysis(id, type, { loading: false, data: result });
+        } else if (type === 'qualify') {
+          updateAnalysis(id, type, { loading: false, data: result.text || '', enrichedScore: result.enrichedScore || null });
+        } else {
+          updateAnalysis(id, type, { loading: false, data: result.text || result.content || JSON.stringify(result, null, 2) });
+        }
       } catch (err) {
         updateAnalysis(id, type, { loading: false, error: err.message });
       }

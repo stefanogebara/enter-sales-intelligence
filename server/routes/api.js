@@ -49,7 +49,52 @@ router.get('/companies/:id', (req, res) => {
   res.json({ ...company, score: calculateScore(company) });
 });
 
-// POST /api/qualify — deep qualification via Claude + web search
+// Extract structured metrics from qualification text via Haiku
+async function extractMetrics(qualText) {
+  try {
+    const res = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${process.env.OPENROUTER_API_KEY}` },
+      body: JSON.stringify({
+        model: 'anthropic/claude-3.5-haiku', max_tokens: 500,
+        messages: [
+          { role: 'system', content: 'Extract metrics from this analysis. Return ONLY valid JSON.\nFormat: {"employees":number,"glassdoorRating":number,"recentLayoffs":number,"unionDispute":boolean,"restructuring":boolean,"casesPerYear":number,"annualCostBRL":number,"turnoverPct":number}\nUse null if not found.' },
+          { role: 'user', content: qualText },
+        ],
+      }),
+      signal: AbortSignal.timeout(10000),
+    });
+    if (!res.ok) return null;
+    const data = await res.json();
+    const raw = data.choices?.[0]?.message?.content || '';
+    const m = raw.match(/\{[\s\S]*\}/);
+    return m ? JSON.parse(m[0]) : null;
+  } catch { return null; }
+}
+
+function enrichScore(company, baseScore, metrics) {
+  if (!metrics) return null;
+  let adj = 0;
+  if (metrics.glassdoorRating != null) { if (metrics.glassdoorRating < 3.0) adj += 5; else if (metrics.glassdoorRating < 3.5) adj += 2; else if (metrics.glassdoorRating >= 4.2) adj -= 3; }
+  if (metrics.employees != null && metrics.employees > 0) { const r = metrics.employees / company.employees; if (r > 1.2) adj += 3; else if (r < 0.8) adj -= 3; }
+  if (metrics.recentLayoffs != null && metrics.recentLayoffs > 500) adj += 4;
+  if (metrics.casesPerYear != null && metrics.casesPerYear > 0) { const r = metrics.casesPerYear / baseScore.estimatedCases; if (r > 1.5) adj += 5; else if (r > 1.1) adj += 2; else if (r < 0.5) adj -= 4; }
+  if (metrics.unionDispute === true && !company.unionDispute) adj += 3;
+  const total = Math.max(0, Math.min(100, baseScore.total + adj));
+  let verdict; if (total >= 65) verdict = 'QUALIFIED'; else if (total >= 40) verdict = 'POTENTIAL'; else verdict = 'NOT_QUALIFIED';
+  return {
+    total, baseTotal: baseScore.total, adjustment: adj, verdict, metrics,
+    factors: [
+      metrics.glassdoorRating != null ? `Glassdoor ${metrics.glassdoorRating}/5` : null,
+      metrics.employees != null ? `${metrics.employees.toLocaleString()} func. (real)` : null,
+      metrics.recentLayoffs != null ? `${metrics.recentLayoffs.toLocaleString()} demissões` : null,
+      metrics.casesPerYear != null ? `${metrics.casesPerYear.toLocaleString()} casos/ano (real)` : null,
+      metrics.unionDispute ? 'Disputa sindical confirmada' : null,
+    ].filter(Boolean),
+  };
+}
+
+// POST /api/qualify — deep qualification + score enrichment
 router.post('/qualify', async (req, res) => {
   try {
     const { companyId } = req.body;
@@ -60,14 +105,23 @@ router.post('/qualify', async (req, res) => {
 
     const cacheKey = `${companyId}:qualify`;
     const cached = getCached(cacheKey);
-    if (cached) return res.json({ text: cached, cached: true });
+    if (cached) {
+      const parsed = JSON.parse(cached);
+      return res.json(parsed);
+    }
 
-    const enriched = { ...company, score: calculateScore(company) };
+    const baseScore = calculateScore(company);
+    const enriched = { ...company, score: baseScore };
     const { system, user } = qualificationPrompt(enriched);
     const text = await callClaude(system, user);
 
-    setCache(cacheKey, text);
-    res.json({ text });
+    // Extract metrics and enrich score
+    const metrics = await extractMetrics(text);
+    const enrichedScore = enrichScore(company, baseScore, metrics);
+
+    const result = { text, enrichedScore };
+    setCache(cacheKey, JSON.stringify(result));
+    res.json(result);
   } catch (err) {
     res.status(500).json({ error: safeErrorMessage(err) });
   }

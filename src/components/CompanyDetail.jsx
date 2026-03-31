@@ -72,9 +72,14 @@ export default function CompanyDetail({ company, onBack, analysisState, onRunAna
       <div className="enter-card p-6">
         {activeTab === 'overview' && <OverviewTab company={company} />}
         {activeTab === 'qualify' && (
-          <AIPanel type="qualify" title="Qualificação com Dados Reais"
-            description="Análise via Perplexity Sonar Pro com pesquisa web. Busca headcount real, litígios trabalhistas, notícias de layoffs e benchmarks do CNJ."
-            buttonLabel="Analisar Empresa" state={analysisState.qualify} onRun={() => onRunAnalysis('qualify')} />
+          <div>
+            <AIPanel type="qualify" title="Qualificação com Dados Reais"
+              description="Análise via Perplexity Sonar Pro com pesquisa web. Busca headcount real, Glassdoor, litígios trabalhistas e jurimetria."
+              buttonLabel="Analisar Empresa" state={analysisState.qualify} onRun={() => onRunAnalysis('qualify')} />
+            {analysisState.qualify?.enrichedScore && (
+              <EnrichedScoreBanner score={analysisState.qualify.enrichedScore} />
+            )}
+          </div>
         )}
         {activeTab === 'discovery' && (
           <AIPanel type="discovery" title="Roteiro de Discovery"
@@ -252,6 +257,51 @@ function FactorSection({ title, factors }) {
           </div>
         ))}
       </div>
+    </div>
+  );
+}
+
+function EnrichedScoreBanner({ score }) {
+  const up = score.adjustment > 0;
+  const neutral = score.adjustment === 0;
+  const color = up ? 'text-verdict-qualified' : neutral ? 'text-enter-gray-400' : 'text-blue-400';
+  const arrow = up ? '↑' : neutral ? '→' : '↓';
+  const verdictColor = {
+    QUALIFIED: 'bg-verdict-qualified-bg text-verdict-qualified',
+    POTENTIAL: 'bg-verdict-potential-bg text-verdict-potential',
+    NOT_QUALIFIED: 'bg-verdict-unqualified-bg text-verdict-unqualified',
+  }[score.verdict] || '';
+
+  return (
+    <div className="mt-4 enter-card p-4 border-enter-gold/30">
+      <div className="flex items-center justify-between mb-3">
+        <div className="flex items-center gap-3">
+          <Zap className="w-4 h-4 text-enter-gold" />
+          <span className="text-sm font-semibold text-enter-white">Score Enriquecido</span>
+        </div>
+        <span className={`enter-badge ${verdictColor}`}>{score.verdict === 'QUALIFIED' ? 'Qualificado' : score.verdict === 'POTENTIAL' ? 'Potencial' : 'Não Qualificado'}</span>
+      </div>
+
+      <div className="flex items-center gap-4 mb-3">
+        <div className="text-center">
+          <p className="text-xs text-enter-gray-500">Estimado</p>
+          <p className="text-xl font-mono text-enter-gray-400">{score.baseTotal}</p>
+        </div>
+        <span className={`text-2xl font-mono ${color}`}>{arrow}</span>
+        <div className="text-center">
+          <p className="text-xs text-enter-gold">Enriquecido</p>
+          <p className="text-xl font-mono text-enter-white font-bold">{score.total}</p>
+        </div>
+        <span className={`text-sm font-mono ${color}`}>({up ? '+' : ''}{score.adjustment})</span>
+      </div>
+
+      {score.factors.length > 0 && (
+        <div className="flex flex-wrap gap-2">
+          {score.factors.map((f, i) => (
+            <span key={i} className="enter-badge bg-enter-gray-800 text-enter-gray-300 text-[10px]">{f}</span>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
