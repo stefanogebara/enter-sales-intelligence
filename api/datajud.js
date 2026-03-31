@@ -31,7 +31,7 @@ async function queryTRT(trt) {
           },
         },
       }),
-      signal: AbortSignal.timeout(12000),
+      signal: AbortSignal.timeout(25000),
     });
     if (!res.ok) return null;
     return await res.json();
