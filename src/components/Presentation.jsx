@@ -287,7 +287,7 @@ function DiscoverySlide() {
         ]} />
         <QBlock cat="Budget" color="text-enter-gold" questions={[
           'Existe uma meta de redução de custo de litígio ou é tratado como custo fixo? O board pressiona por eficiência nessa área?',
-          'Se eu te mostrasse uma forma de reduzir 30% do custo por processo, com dados auditáveis, quanto isso representaria em reais por ano?',
+          'Se a Enter conseguisse reduzir significativamente o custo por processo com IA, como vocês mediriam o impacto? Quanto isso representaria em reais por ano?',
         ]} />
         <QBlock cat="Decisão" color="text-verdict-qualified" questions={[
           'Quem decide a contratação de uma solução de gestão de contencioso trabalhista? É o jurídico, o CFO, ou os dois juntos?',
@@ -323,8 +323,9 @@ function PitchSlide() {
           <p className="text-body-lg text-enter-gray-300 leading-relaxed">
             Vocês já usam a Enter no consumerista. A mesma IA agora faz no trabalhista:
             analisa documentos, gera defesas automáticas, recomenda acordos e centraliza
-            todos os escritórios numa plataforma só. Resultado: 30% menos custo por processo
-            e previsibilidade no quanto vai gastar — em vez de surpresas no balanço.
+            todos os escritórios numa plataforma só. No consumerista, a LATAM já teve 30% mais
+            êxito nas causas com a Enter. A mesma lógica se aplica ao trabalhista — menos custo
+            por processo e previsibilidade no balanço.
           </p>
         </div>
         <div>

@@ -631,7 +631,7 @@ export const companies = [
     name: 'Vivo (Telefônica Brasil)',
     sector: 'telecom',
     segment: 'Telecom',
-    employees: 33000,
+    employees: 32728,  // CVM filing 2024
     headquarters: 'São Paulo, SP',
     states: ['SP', 'RJ', 'MG', 'RS', 'PR', 'BA', 'PE', 'CE', 'DF', 'SC', 'GO', 'ES', 'PA', 'MA', 'AM'],
     cargoDiversity: 8,
