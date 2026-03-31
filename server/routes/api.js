@@ -152,7 +152,7 @@ router.post('/simulate', async (req, res) => {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${process.env.OPENROUTER_API_KEY}` },
         body: JSON.stringify({
-          model: 'anthropic/claude-haiku-3.5',
+          model: 'anthropic/claude-3.5-haiku',
           max_tokens: 300,
           messages: [
             { role: 'system', content: `${p.prompt}\nResponda em português do Brasil. Máximo 4 frases.` },

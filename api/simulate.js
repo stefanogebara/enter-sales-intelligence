@@ -82,7 +82,7 @@ ${company.notes || ''}`;
             'X-Title': 'Enter Simulation',
           },
           body: JSON.stringify({
-            model: 'anthropic/claude-haiku-3.5',
+            model: 'anthropic/claude-3.5-haiku',
             max_tokens: 300,
             messages: [
               { role: 'system', content: `${persona.prompt}\n\nResponda em português do Brasil. Máximo 4 frases.` },
