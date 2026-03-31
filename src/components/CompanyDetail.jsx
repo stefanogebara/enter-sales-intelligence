@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ArrowLeft, Users, MapPin, Building2, Briefcase, MessageSquare, Presentation, Loader2, Copy, Check } from 'lucide-react';
+import { ArrowLeft, Users, MapPin, Building2, Briefcase, MessageSquare, Presentation, Loader2, Copy, Check, Zap } from 'lucide-react';
 import Markdown from 'react-markdown';
 import ScoreGauge from './ScoreGauge';
 import ScoreBreakdown from './ScoreBreakdown';
@@ -9,6 +9,7 @@ const TABS = [
   { id: 'qualify', label: 'Qualificação', icon: Briefcase },
   { id: 'discovery', label: 'Discovery', icon: MessageSquare },
   { id: 'pitch', label: 'Pitch CFO', icon: Presentation },
+  { id: 'simulate', label: 'Simulação', icon: Zap },
 ];
 
 export default function CompanyDetail({ company, onBack, analysisState, onRunAnalysis }) {
@@ -85,6 +86,9 @@ export default function CompanyDetail({ company, onBack, analysisState, onRunAna
             description="3 parágrafos em português, personalizados com dados reais da empresa, criando urgência e diferenciando a Enter."
             buttonLabel="Gerar Pitch" state={analysisState.pitch} onRun={() => onRunAnalysis('pitch')} />
         )}
+        {activeTab === 'simulate' && (
+          <SimulationPanel state={analysisState.simulate} onRun={() => onRunAnalysis('simulate')} />
+        )}
       </div>
     </div>
   );
@@ -156,6 +160,72 @@ function FactorSection({ title, factors }) {
           </div>
         ))}
       </div>
+    </div>
+  );
+}
+
+function SimulationPanel({ state, onRun }) {
+  if (state?.loading) {
+    return (
+      <div className="flex flex-col items-center justify-center py-16">
+        <Loader2 className="w-8 h-8 text-enter-gold animate-spin mb-4" />
+        <p className="text-sm text-enter-gray-400">Gerando 5 perspectivas em paralelo...</p>
+        <p className="text-xs text-enter-gray-600 mt-1">CFO · Jurídico · RH · Sindicato · Conselho</p>
+      </div>
+    );
+  }
+
+  if (state?.error) {
+    return (
+      <div className="py-8">
+        <div className="bg-verdict-unqualified-bg border border-verdict-unqualified/20 rounded-enter p-4 mb-4">
+          <p className="text-sm text-verdict-unqualified">{state.error}</p>
+        </div>
+        <button onClick={onRun} className="font-mono text-label uppercase border border-enter-white text-enter-white px-6 py-3 rounded-enter hover:bg-enter-white hover:text-enter-black transition-colors cursor-pointer">Tentar novamente</button>
+      </div>
+    );
+  }
+
+  if (state?.data?.personas) {
+    return (
+      <div>
+        <div className="flex items-center justify-between mb-6">
+          <div>
+            <h3 className="text-base font-semibold text-enter-white">Simulação Multi-Stakeholder</h3>
+            <p className="text-caption text-enter-gray-500 mt-1">5 personas analisando o mesmo cenário trabalhista</p>
+          </div>
+        </div>
+        <div className="space-y-4">
+          {state.data.personas.map((p) => (
+            <div key={p.id} className="enter-card p-4">
+              <div className="flex items-center gap-3 mb-3">
+                <div className="w-8 h-8 rounded-enter flex items-center justify-center text-[10px] font-mono font-bold text-enter-black" style={{ backgroundColor: p.color }}>
+                  {p.label}
+                </div>
+                <span className="text-sm font-semibold text-enter-white">{p.title}</span>
+              </div>
+              <p className="text-body-lg text-enter-gray-300 leading-relaxed">{p.text}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex flex-col items-center justify-center py-16">
+      <h3 className="text-base font-semibold text-enter-white mb-2">Simulação Multi-Stakeholder</h3>
+      <p className="text-sm text-enter-gray-500 text-center max-w-md mb-3">
+        Gera 5 perspectivas simultâneas sobre o cenário trabalhista da empresa:
+        CFO, Diretor Jurídico, RH, Líder Sindical e Membro do Conselho.
+      </p>
+      <p className="text-xs text-enter-gray-600 text-center max-w-md mb-6">
+        Inspirado em simulação multi-agente — cada persona analisa o mesmo cenário
+        com prioridades e preocupações diferentes.
+      </p>
+      <button onClick={onRun} className="font-mono text-label uppercase border border-enter-gold text-enter-gold px-8 py-3 rounded-enter hover:bg-enter-gold hover:text-enter-black transition-colors cursor-pointer">
+        Rodar Simulação
+      </button>
     </div>
   );
 }

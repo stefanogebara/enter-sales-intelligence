@@ -4,7 +4,7 @@ import Layout from './components/Layout';
 import Dashboard from './components/Dashboard';
 import RankingTable from './components/RankingTable';
 import CompanyDetail from './components/CompanyDetail';
-import { qualifyCompany, generateDiscovery, generatePitch } from './lib/api';
+import { qualifyCompany, generateDiscovery, generatePitch, runSimulation } from './lib/api';
 
 export default function App() {
   const [view, setView] = useState('presentation');
@@ -46,9 +46,9 @@ export default function App() {
       const id = selectedCompany.id;
       updateAnalysis(id, type, { loading: true, error: null });
       try {
-        const apiCall = { qualify: qualifyCompany, discovery: generateDiscovery, pitch: generatePitch }[type];
+        const apiCall = { qualify: qualifyCompany, discovery: generateDiscovery, pitch: generatePitch, simulate: runSimulation }[type];
         const result = await apiCall(id);
-        updateAnalysis(id, type, { loading: false, data: result.text || result.content || JSON.stringify(result, null, 2) });
+        updateAnalysis(id, type, { loading: false, data: type === 'simulate' ? result : (result.text || result.content || JSON.stringify(result, null, 2)) });
       } catch (err) {
         updateAnalysis(id, type, { loading: false, error: err.message });
       }

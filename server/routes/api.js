@@ -123,6 +123,56 @@ router.post('/pitch', async (req, res) => {
   }
 });
 
+// POST /api/simulate — multi-stakeholder simulation
+router.post('/simulate', async (req, res) => {
+  const { companyId } = req.body;
+  if (!validateCompanyId(companyId)) return res.status(400).json({ error: 'companyId inválido' });
+
+  const company = getCompanyById(companyId);
+  if (!company) return res.status(404).json({ error: 'Empresa não encontrada' });
+
+  const cacheKey = `${companyId}:simulate`;
+  const cached = getCached(cacheKey);
+  if (cached) return res.json(JSON.parse(cached));
+
+  const score = calculateScore(company);
+  const context = `Empresa: ${company.name} (${company.segment})\nFuncionários: ${company.employees.toLocaleString()}\nSede: ${company.headquarters}\nScore: ${score.total}/100 (${score.verdict})\nCasos estimados/ano: ~${score.estimatedCases.toLocaleString()}\nCusto estimado: R$${(score.estimatedAnnualCostBRL / 1e6).toFixed(0)}M/ano\n${company.notes || ''}`;
+
+  const personas = [
+    { id: 'cfo', title: 'CFO', label: 'CFO', color: '#3B82F6', prompt: 'Você é o CFO. Analise da perspectiva FINANCEIRA em 3-4 frases: provisão, EBITDA, previsibilidade, risco para investidores.' },
+    { id: 'clo', title: 'Diretor Jurídico', label: 'CLO', color: '#FFAE35', prompt: 'Você é o CLO. Analise da perspectiva JURÍDICA em 3-4 frases: volume de casos, capacidade da equipe, escritórios terceirizados, precedentes.' },
+    { id: 'chro', title: 'Diretor de RH', label: 'CHRO', color: '#22C55E', prompt: 'Você é o CHRO. Analise da perspectiva de PESSOAS em 3-4 frases: moral, marca empregadora, retenção, Glassdoor.' },
+    { id: 'union', title: 'Líder Sindical', label: 'SIND', color: '#EF4444', prompt: 'Você é o líder sindical. Analise da perspectiva dos TRABALHADORES em 3-4 frases: demissões injustas, condições, horas extras, mobilização.' },
+    { id: 'board', title: 'Membro do Conselho', label: 'BOARD', color: '#A855F7', prompt: 'Você é membro do conselho. Analise da perspectiva ESTRATÉGICA em 3-4 frases: reputação, ESG, pares do setor, ação preventiva.' },
+  ];
+
+  try {
+    const results = await Promise.all(personas.map(async (p) => {
+      const r = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${process.env.OPENROUTER_API_KEY}` },
+        body: JSON.stringify({
+          model: 'anthropic/claude-haiku-3.5',
+          max_tokens: 300,
+          messages: [
+            { role: 'system', content: `${p.prompt}\nResponda em português do Brasil. Máximo 4 frases.` },
+            { role: 'user', content: context },
+          ],
+        }),
+      });
+      if (!r.ok) throw new Error(`${p.id}: ${r.status}`);
+      const data = await r.json();
+      return { id: p.id, title: p.title, label: p.label, color: p.color, text: data.choices?.[0]?.message?.content || '' };
+    }));
+
+    const result = { personas: results, company: company.name };
+    setCache(cacheKey, JSON.stringify(result));
+    res.json(result);
+  } catch (err) {
+    res.status(500).json({ error: safeErrorMessage(err) });
+  }
+});
+
 // POST /api/warm — pre-warm cache (localhost only, capped at 5)
 router.post('/warm', (req, res) => {
   const host = req.hostname || req.headers.host;

@@ -36,3 +36,10 @@ export async function generatePitch(companyId) {
     body: JSON.stringify({ companyId }),
   });
 }
+
+export async function runSimulation(companyId) {
+  return request('/simulate', {
+    method: 'POST',
+    body: JSON.stringify({ companyId }),
+  });
+}
