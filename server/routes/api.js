@@ -204,7 +204,7 @@ router.post('/pitch', async (req, res) => {
   }
 });
 
-// POST /api/simulate — multi-stakeholder simulation
+// POST /api/simulate — multi-stakeholder simulation v2 (Round 1 + Round 2 + Synthesis)
 router.post('/simulate', async (req, res) => {
   const { companyId } = req.body;
   if (!validateCompanyId(companyId)) return res.status(400).json({ error: 'companyId inválido' });
@@ -220,33 +220,47 @@ router.post('/simulate', async (req, res) => {
   const context = `Empresa: ${company.name} (${company.segment})\nFuncionários: ${company.employees.toLocaleString()}\nSede: ${company.headquarters}\nScore: ${score.total}/100 (${score.verdict})\nCasos estimados/ano: ~${score.estimatedCases.toLocaleString()}\nCusto estimado: R$${(score.estimatedAnnualCostBRL / 1e6).toFixed(0)}M/ano\n${company.notes || ''}`;
 
   const personas = [
-    { id: 'cfo', title: 'CFO', label: 'CFO', color: '#3B82F6', prompt: 'Você é o CFO. Analise da perspectiva FINANCEIRA em 3-4 frases: provisão, EBITDA, previsibilidade, risco para investidores.' },
-    { id: 'clo', title: 'Diretor Jurídico', label: 'CLO', color: '#FFAE35', prompt: 'Você é o CLO. Analise da perspectiva JURÍDICA em 3-4 frases: volume de casos, capacidade da equipe, escritórios terceirizados, precedentes.' },
-    { id: 'chro', title: 'Diretor de RH', label: 'CHRO', color: '#22C55E', prompt: 'Você é o CHRO. Analise da perspectiva de PESSOAS em 3-4 frases: moral, marca empregadora, retenção, Glassdoor.' },
-    { id: 'union', title: 'Líder Sindical', label: 'SIND', color: '#EF4444', prompt: 'Você é o líder sindical. Analise da perspectiva dos TRABALHADORES em 3-4 frases: demissões injustas, condições, horas extras, mobilização.' },
-    { id: 'board', title: 'Membro do Conselho', label: 'BOARD', color: '#A855F7', prompt: 'Você é membro do conselho. Analise da perspectiva ESTRATÉGICA em 3-4 frases: reputação, ESG, pares do setor, ação preventiva.' },
+    { id: 'cfo', title: 'CFO', label: 'CFO', color: '#3B82F6', prompt: 'Você é o CFO. Analise da perspectiva FINANCEIRA em 3-4 frases.' },
+    { id: 'clo', title: 'Diretor Jurídico', label: 'CLO', color: '#FFAE35', prompt: 'Você é o CLO. Analise da perspectiva JURÍDICA em 3-4 frases.' },
+    { id: 'chro', title: 'Diretor de RH', label: 'CHRO', color: '#22C55E', prompt: 'Você é o CHRO. Analise da perspectiva de PESSOAS em 3-4 frases.' },
+    { id: 'union', title: 'Líder Sindical', label: 'SIND', color: '#EF4444', prompt: 'Você é o líder sindical. Analise da perspectiva dos TRABALHADORES em 3-4 frases.' },
+    { id: 'board', title: 'Membro do Conselho', label: 'BOARD', color: '#A855F7', prompt: 'Você é membro do conselho. Analise da perspectiva ESTRATÉGICA em 3-4 frases.' },
   ];
 
+  const OR = 'https://openrouter.ai/api/v1/chat/completions';
+  const hdr = { 'Content-Type': 'application/json', 'Authorization': `Bearer ${process.env.OPENROUTER_API_KEY}` };
+  const ask = async (model, sys, usr) => {
+    const r = await fetch(OR, { method: 'POST', headers: hdr, body: JSON.stringify({ model, max_tokens: model.includes('haiku') ? 300 : 600, messages: [{ role: 'system', content: sys }, { role: 'user', content: usr }] }) });
+    if (!r.ok) throw new Error(`LLM ${r.status}`);
+    return (await r.json()).choices?.[0]?.message?.content || '';
+  };
+
   try {
-    const results = await Promise.all(personas.map(async (p) => {
-      const r = await fetch('https://openrouter.ai/api/v1/chat/completions', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${process.env.OPENROUTER_API_KEY}` },
-        body: JSON.stringify({
-          model: 'anthropic/claude-3.5-haiku',
-          max_tokens: 300,
-          messages: [
-            { role: 'system', content: `${p.prompt}\nResponda em português do Brasil. Máximo 4 frases.` },
-            { role: 'user', content: context },
-          ],
-        }),
-      });
-      if (!r.ok) throw new Error(`${p.id}: ${r.status}`);
-      const data = await r.json();
-      return { id: p.id, title: p.title, label: p.label, color: p.color, text: data.choices?.[0]?.message?.content || '' };
+    // Round 1
+    const round1 = await Promise.all(personas.map(async (p) => ({
+      ...p, text: await ask('anthropic/claude-3.5-haiku', `${p.prompt}\nPortuguês do Brasil. Máximo 4 frases.`, context),
+    })));
+
+    // Round 2: reactions
+    const round2 = await Promise.all(round1.map(async (p) => {
+      const others = round1.filter(o => o.id !== p.id).map(o => `[${o.title}]: ${o.text}`).join('\n\n');
+      const reaction = await ask('anthropic/claude-3.5-haiku',
+        `Você é o ${p.title}. Ouviu os outros stakeholders. Em 1-2 frases, reaja: concorda, discorda, ou adiciona algo? Português do Brasil.`,
+        `Sua análise:\n${p.text}\n\nOutros:\n${others}`);
+      return { ...p, reaction };
     }));
 
-    const result = { personas: results, company: company.name };
+    // Synthesis
+    const allText = round1.map(p => `[${p.title}]: ${p.text}`).join('\n\n');
+    const synthesis = await ask('anthropic/claude-sonnet-4-6',
+      'Analise 5 perspectivas. Retorne em PT-BR:\n## Consenso\n[1-2 frases]\n## Conflitos\n[1-2 frases]\n## Urgência\n[1 frase + score 1-10]',
+      allText);
+
+    const result = {
+      company: company.name,
+      personas: round2.map(p => ({ id: p.id, title: p.title, label: p.label, color: p.color, text: p.text, reaction: p.reaction })),
+      synthesis,
+    };
     setCache(cacheKey, JSON.stringify(result));
     res.json(result);
   } catch (err) {

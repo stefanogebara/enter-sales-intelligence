@@ -334,10 +334,14 @@ function SimulationPanel({ state, onRun }) {
         <div className="flex items-center justify-between mb-6">
           <div>
             <h3 className="text-base font-semibold text-enter-white">Simulação Multi-Stakeholder</h3>
-            <p className="text-caption text-enter-gray-500 mt-1">5 personas analisando o mesmo cenário trabalhista</p>
+            <p className="text-caption text-enter-gray-500 mt-1">
+              Round 1: análise independente · Round 2: reação aos outros · Síntese: consenso e conflitos
+            </p>
           </div>
         </div>
-        <div className="space-y-4">
+
+        {/* Personas */}
+        <div className="space-y-4 mb-6">
           {state.data.personas.map((p) => (
             <div key={p.id} className="enter-card p-4">
               <div className="flex items-center gap-3 mb-3">
@@ -347,9 +351,28 @@ function SimulationPanel({ state, onRun }) {
                 <span className="text-sm font-semibold text-enter-white">{p.title}</span>
               </div>
               <p className="text-body-lg text-enter-gray-300 leading-relaxed">{p.text}</p>
+              {p.reaction && (
+                <div className="mt-3 pt-3 border-t border-enter-gray-800">
+                  <p className="text-xs font-mono text-enter-gray-500 uppercase mb-1">Reação (Round 2)</p>
+                  <p className="text-sm text-enter-gray-400 italic">{p.reaction}</p>
+                </div>
+              )}
             </div>
           ))}
         </div>
+
+        {/* Synthesis */}
+        {state.data.synthesis && (
+          <div className="enter-card p-5 border-enter-gold/30">
+            <div className="flex items-center gap-2 mb-3">
+              <Zap className="w-4 h-4 text-enter-gold" />
+              <span className="text-sm font-semibold text-enter-gold">Síntese</span>
+            </div>
+            <div className="prose prose-sm prose-invert max-w-none prose-headings:text-enter-gold prose-headings:text-sm prose-headings:mb-1 prose-p:text-enter-gray-300 prose-p:text-sm prose-p:leading-relaxed">
+              <Markdown>{state.data.synthesis}</Markdown>
+            </div>
+          </div>
+        )}
       </div>
     );
   }
