@@ -181,11 +181,11 @@ function ScoreSlide() {
         <span className="text-enter-gold">dados públicos verificáveis</span>
       </h2>
 
-      <div className="grid grid-cols-3 gap-16">
+      <div className="grid grid-cols-3 gap-16 mb-12">
         <Dimension
           pct="30%" title="Volume" color="border-blue-500"
           desc="Quantos processos a empresa provavelmente recebe?"
-          lines={['Número de funcionários', 'Taxa de processos do setor', 'Verificado com dados do TST']}
+          lines={['Número de funcionários', 'Taxa de processos do setor (TST)', 'Glassdoor e Reclame Aqui como proxy']}
         />
         <Dimension
           pct="40%" title="Complexidade" color="border-enter-gold"
@@ -197,6 +197,20 @@ function ScoreSlide() {
           desc="Aconteceu algo recente que gera mais processos?"
           lines={['Demissões em massa recentes', 'Fusão ou aquisição de empresa', 'Reestruturação corporativa']}
         />
+      </div>
+
+      <div className="grid grid-cols-2 gap-8">
+        <p className="text-body-lg text-enter-gray-500">
+          <span className="text-enter-white">Fontes:</span> TST Ranking, CNJ em Números,
+          Glassdoor, Reclame Aqui, CVM/SEC filings.
+          Com acesso ao <span className="text-enter-gold">Codex</span> (base do CNJ com 237M de processos),
+          seria possível aplicar jurimetria preditiva por empresa.
+        </p>
+        <p className="text-body-lg text-enter-gray-500">
+          <span className="text-enter-white">Os pesos (30/40/30) são configuráveis</span> —
+          a Enter pode ajustar conforme o perfil de cliente ideal evolui.
+          Um 4o critério possível: probabilidade de êxito via jurimetria.
+        </p>
       </div>
     </div>
   );
