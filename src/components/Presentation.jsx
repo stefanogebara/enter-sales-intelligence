@@ -340,15 +340,15 @@ function WhatItDoes() {
         <span className="text-enter-gold">cada empresa da base</span>
       </h2>
 
-      <div className="space-y-8">
-        <Step n="01" title="Ranking" color="text-blue-400"
-          desc="Mostra todas as 36 empresas da base Enter ordenadas pelo score. Você vê de cara quem tem mais potencial." />
-        <Step n="02" title="Qualificação com IA" color="text-enter-gold"
-          desc="Clica numa empresa e a IA pesquisa na internet em tempo real: quantos funcionários tem, se teve demissões recentes, se tem sindicato ativo, quanto gasta com processos." />
-        <Step n="03" title="Perguntas de Discovery" color="text-orange-400"
-          desc="Gera 8 perguntas prontas para fazer numa reunião com o diretor jurídico da empresa. Tipo: 'Como vocês gerenciam os processos trabalhistas hoje? Quanto gastam por ano?'" />
-        <Step n="04" title="Pitch para o CFO" color="text-verdict-qualified"
-          desc="Escreve 3 parágrafos persuasivos para enviar ao CFO (diretor financeiro) da empresa, explicando por que ele deveria contratar a Enter para gerenciar o contencioso trabalhista." />
+      <div className="space-y-6">
+        <Step n="01" title="Ranking + DataJud" color="text-blue-400"
+          desc="36 empresas rankeadas por score. Dados ao vivo do DataJud/CNJ (237 milhões de processos) mostram os principais assuntos trabalhistas por região." />
+        <Step n="02" title="Qualificação + Score Dinâmico" color="text-enter-gold"
+          desc="IA pesquisa Glassdoor, notícias de demissões e dados de processos. Depois, o score recalcula automaticamente com os dados reais encontrados. Você vê o antes e depois." />
+        <Step n="03" title="Discovery + Pitch CFO" color="text-orange-400"
+          desc="Gera 8 perguntas de discovery categorizadas e um pitch de 3 parágrafos pro CFO, tudo personalizado com dados reais da empresa." />
+        <Step n="04" title="Simulação Multi-Stakeholder" color="text-verdict-qualified"
+          desc="5 personas de IA (CFO, Jurídico, RH, Sindicato, Conselho) analisam o mesmo cenário ao mesmo tempo. Cada um com prioridades e preocupações diferentes." />
       </div>
     </div>
   );

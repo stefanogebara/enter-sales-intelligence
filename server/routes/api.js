@@ -127,6 +127,33 @@ router.post('/qualify', async (req, res) => {
   }
 });
 
+// POST /api/datajud — real CNJ judicial data
+router.post('/datajud', async (req, res) => {
+  const trt = req.body.region || 'trt2';
+  try {
+    const r = await fetch(`https://api-publica.datajud.cnj.jus.br/api_publica_${trt}/_search`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'APIKey cDZHYzlZa0JadVREZDJCendQbXY6SkJlTzNjLV9TRENyQk1RdnFKZGRQdw==' },
+      body: JSON.stringify({ size: 0, aggs: {
+        top_subjects: { terms: { field: 'assuntos.nome.keyword', size: 10 } },
+        cases_by_year: { date_histogram: { field: 'dataAjuizamento', calendar_interval: 'year' } },
+        by_class: { terms: { field: 'classe.nome.keyword', size: 5 } },
+      }}),
+      signal: AbortSignal.timeout(25000),
+    });
+    if (!r.ok) return res.status(502).json({ error: 'DataJud indisponível' });
+    const data = await r.json();
+    res.json({
+      region: trt.toUpperCase(),
+      totalCases: data.hits?.total?.value || 0,
+      topSubjects: (data.aggregations?.top_subjects?.buckets || []).map(b => ({ name: b.key, count: b.doc_count })),
+      yearlyTrend: (data.aggregations?.cases_by_year?.buckets || []).filter(b => b.doc_count > 0).slice(-6).map(b => ({ year: new Date(b.key_as_string).getFullYear(), cases: b.doc_count })),
+      caseTypes: (data.aggregations?.by_class?.buckets || []).map(b => ({ name: b.key, count: b.doc_count })),
+      source: 'DataJud/CNJ — API Pública',
+    });
+  } catch { res.status(500).json({ error: 'DataJud timeout' }); }
+});
+
 // POST /api/discovery — generate discovery questions
 router.post('/discovery', async (req, res) => {
   try {
