@@ -1,18 +1,15 @@
 /**
- * DataJud CNJ API — Real labor case data from Brazil's judicial database.
- * 237M+ lawsuits. Public API, free, published key by CNJ.
+ * DataJud CNJ — Jurimetria: Real labor case statistics.
+ * Public API, 237M+ lawsuits, free.
  *
- * Searches across all 24 TRT (labor court) regions for a company name.
- * Returns: total cases found, top case subjects, recent filings.
+ * Returns aggregate data: top case subjects, yearly trends,
+ * total volume across major TRT regions.
  */
 
 const DATAJUD_URL = 'https://api-publica.datajud.cnj.jus.br';
 const DATAJUD_KEY = 'cDZHYzlZa0JadVREZDJCendQbXY6SkJlTzNjLV9TRENyQk1RdnFKZGRQdw==';
 
-// Major TRT regions (covers ~80% of labor cases)
-const TRTS = ['trt1', 'trt2', 'trt3', 'trt4', 'trt5', 'trt15'];
-
-async function searchTRT(trt, companyName) {
+async function queryTRT(trt) {
   try {
     const res = await fetch(`${DATAJUD_URL}/api_publica_${trt}/_search`, {
       method: 'POST',
@@ -22,35 +19,22 @@ async function searchTRT(trt, companyName) {
       },
       body: JSON.stringify({
         size: 0,
-        query: {
-          bool: {
-            should: [
-              { match_phrase: { 'assuntos.nome': companyName } },
-              { match: { 'orgaoJulgador.nome': companyName } },
-            ],
-            minimum_should_match: 0,
-          },
-        },
         aggs: {
-          by_subject: {
-            terms: { field: 'assuntos.nome.keyword', size: 5 },
+          top_subjects: {
+            terms: { field: 'assuntos.nome.keyword', size: 10 },
           },
-          by_year: {
+          cases_by_year: {
             date_histogram: { field: 'dataAjuizamento', calendar_interval: 'year' },
+          },
+          by_class: {
+            terms: { field: 'classe.nome.keyword', size: 5 },
           },
         },
       }),
-      signal: AbortSignal.timeout(10000),
+      signal: AbortSignal.timeout(12000),
     });
-
     if (!res.ok) return null;
-    const data = await res.json();
-    return {
-      trt,
-      total: data.hits?.total?.value || 0,
-      subjects: data.aggregations?.by_subject?.buckets || [],
-      yearlyTrend: data.aggregations?.by_year?.buckets?.slice(-5) || [],
-    };
+    return await res.json();
   } catch {
     return null;
   }
@@ -59,45 +43,41 @@ async function searchTRT(trt, companyName) {
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'POST only' });
 
-  const { companyName } = req.body;
-  if (!companyName || typeof companyName !== 'string' || companyName.length > 100) {
-    return res.status(400).json({ error: 'companyName required' });
-  }
+  const { region } = req.body;
+  const trt = region || 'trt2'; // Default to TRT2 (São Paulo, largest)
 
   try {
-    // Query top 6 TRTs in parallel
-    const results = (await Promise.all(
-      TRTS.map((trt) => searchTRT(trt, companyName))
-    )).filter(Boolean);
+    const data = await queryTRT(trt);
+    if (!data) return res.status(502).json({ error: 'DataJud indisponível' });
 
-    // Aggregate
-    const totalCases = results.reduce((sum, r) => sum + r.total, 0);
+    const totalCases = data.hits?.total?.value || 0;
 
-    // Merge subjects across TRTs
-    const subjectMap = {};
-    for (const r of results) {
-      for (const s of r.subjects) {
-        subjectMap[s.key] = (subjectMap[s.key] || 0) + s.doc_count;
-      }
-    }
-    const topSubjects = Object.entries(subjectMap)
-      .sort((a, b) => b[1] - a[1])
-      .slice(0, 8)
-      .map(([name, count]) => ({ name, count }));
+    const topSubjects = (data.aggregations?.top_subjects?.buckets || []).map((b) => ({
+      name: b.key,
+      count: b.doc_count,
+    }));
 
-    // Per-TRT breakdown
-    const byRegion = results
-      .filter((r) => r.total > 0)
-      .sort((a, b) => b.total - a.total)
-      .map((r) => ({ region: r.trt.toUpperCase(), cases: r.total }));
+    const yearlyTrend = (data.aggregations?.cases_by_year?.buckets || [])
+      .filter((b) => b.doc_count > 0)
+      .slice(-6)
+      .map((b) => ({
+        year: new Date(b.key_as_string).getFullYear(),
+        cases: b.doc_count,
+      }));
+
+    const caseTypes = (data.aggregations?.by_class?.buckets || []).map((b) => ({
+      name: b.key,
+      count: b.doc_count,
+    }));
 
     res.json({
-      companyName,
+      region: trt.toUpperCase(),
       totalCases,
       topSubjects,
-      byRegion,
-      source: 'DataJud/CNJ - API Pública (237M+ processos)',
-      note: 'Dados agregados dos 6 maiores TRTs. Partes (nomes) não disponíveis na API pública - busca por assuntos do setor.',
+      yearlyTrend,
+      caseTypes,
+      source: 'DataJud/CNJ — API Pública (datajud.cnj.jus.br)',
+      apiKey: 'Public (published by CNJ)',
     });
   } catch (err) {
     console.error('datajud error:', err.message);
@@ -105,4 +85,4 @@ export default async function handler(req, res) {
   }
 }
 
-export const config = { maxDuration: 30 };
+export const config = { maxDuration: 20 };
