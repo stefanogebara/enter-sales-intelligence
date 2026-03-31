@@ -336,8 +336,8 @@ function WhatItDoes() {
     <div>
       <p className="font-mono text-label uppercase text-enter-gold mb-12">O Que Ela Faz</p>
       <h2 className="text-title-lg text-enter-white mb-16">
-        4 etapas automáticas para<br />
-        <span className="text-enter-gold">cada empresa da base</span>
+        6 capacidades automáticas<br />
+        <span className="text-enter-gold">para cada empresa</span>
       </h2>
 
       <div className="space-y-6">
@@ -368,20 +368,19 @@ function PipelineSlide({ onEnter }) {
         rodar em tempo real com dados da internet.
       </p>
 
-      <div className="flex items-center justify-center gap-6 mb-16">
+      <div className="grid grid-cols-3 gap-4 mb-16 max-w-3xl mx-auto text-left">
         {[
-          { n: '01', label: 'Dashboard', sub: `${companies.length} empresas` },
-          { n: '02', label: 'Qualificação', sub: 'pesquisa web ao vivo' },
-          { n: '03', label: 'Discovery', sub: '8 perguntas prontas' },
-          { n: '04', label: 'Pitch CFO', sub: '3 parágrafos' },
-        ].map(({ n, label, sub }, i) => (
-          <div key={n} className="flex items-center gap-6">
-            <div className="text-left">
-              <span className="font-mono text-caption text-enter-gray-600">{n}</span>
-              <p className="text-title-sm text-enter-white">{label}</p>
-              <p className="text-caption text-enter-gray-500 mt-1">{sub}</p>
-            </div>
-            {i < 3 && <ArrowRight className="w-5 h-5 text-enter-gray-700 flex-shrink-0" />}
+          { n: '01', label: 'Dashboard', sub: `${companies.length} empresas rankeadas` },
+          { n: '02', label: 'DataJud CNJ', sub: '237M processos reais' },
+          { n: '03', label: 'Qualificação', sub: 'web search + score dinâmico' },
+          { n: '04', label: 'Discovery', sub: '8 perguntas categorizadas' },
+          { n: '05', label: 'Pitch CFO', sub: 'dor → solução → urgência' },
+          { n: '06', label: 'Simulação', sub: '5 stakeholders em paralelo' },
+        ].map(({ n, label, sub }) => (
+          <div key={n} className="border-t border-enter-gray-800 pt-3">
+            <span className="font-mono text-caption text-enter-gray-600">{n}</span>
+            <p className="text-body-md text-enter-white font-medium">{label}</p>
+            <p className="text-caption text-enter-gray-500">{sub}</p>
           </div>
         ))}
       </div>
