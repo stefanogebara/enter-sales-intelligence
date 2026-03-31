@@ -218,7 +218,15 @@ function ScoreSlide() {
 
 // ─── 5. PRIORIZAÇÃO (resposta direta do case) ───
 function PrioritizationSlide() {
-  const top5 = companies.slice(0, 5);
+  // Enriched scores (hardcoded from live qualification runs)
+  const top5 = [
+    { name: 'Bradesco', segment: 'Financial Services', employees: 84022, cases: 8402, arr: 2291, base: 77, enriched: 83, delta: '+6' },
+    { name: 'Vivo (Telefônica Brasil)', segment: 'Telecom', employees: 32728, cases: 6546, arr: 1785, base: 76, enriched: 80, delta: '+4' },
+    { name: 'Hapvida', segment: 'Healthcare', employees: 69000, cases: 1380, arr: 376, base: 68, enriched: 80, delta: '+12' },
+    { name: 'Itaú Unibanco', segment: 'Financial Services', employees: 96219, cases: 9622, arr: 2624, base: 76, enriched: 78, delta: '+2' },
+    { name: 'Azul Linhas Aéreas', segment: 'Airlines', employees: 15400, cases: 539, arr: 147, base: 68, enriched: 74, delta: '+6' },
+  ];
+
   return (
     <div>
       <p className="font-mono text-label uppercase text-enter-gold mb-12">Resposta · Priorização</p>
@@ -229,7 +237,7 @@ function PrioritizationSlide() {
 
       <div className="space-y-4">
         {top5.map((c, i) => (
-          <div key={c.id} className="flex items-center gap-6 border-b border-enter-gray-800 pb-4">
+          <div key={c.name} className="flex items-center gap-6 border-b border-enter-gray-800 pb-4">
             <span className="font-mono text-title-sm text-enter-gray-600 w-10">{String(i + 1).padStart(2, '0')}</span>
             <div className="flex-1">
               <div className="flex items-baseline gap-3">
@@ -237,19 +245,22 @@ function PrioritizationSlide() {
                 <span className="text-body-lg text-enter-gray-500">{c.segment}</span>
               </div>
               <p className="text-body-lg text-enter-gray-400 mt-1">
-                {c.employees.toLocaleString('pt-BR')} func. · ~{c.score.estimatedCases.toLocaleString('pt-BR')} casos/ano · ARR est.{' '}
-                <span className="text-enter-gold font-mono">US${(c.score.estimatedARR / 1000).toFixed(0)}k</span>
+                {c.employees.toLocaleString('pt-BR')} func. · ~{c.cases.toLocaleString('pt-BR')} casos/ano · ARR est.{' '}
+                <span className="text-enter-gold font-mono">US${c.arr}k</span>
               </p>
             </div>
-            <span className="font-mono text-title-md text-enter-white">{c.score.total}</span>
+            <div className="text-right">
+              <span className="font-mono text-title-md text-enter-white">{c.enriched}</span>
+              <p className="text-xs font-mono text-verdict-qualified">{c.delta}</p>
+            </div>
           </div>
         ))}
       </div>
 
       <p className="text-body-lg text-enter-gray-500 mt-8">
-        <span className="text-enter-white">Por que esses?</span>{' '}
-        Maior volume de funcionários × setores com mais processos × eventos recentes (demissões, reestruturação).
-        O Bradesco é #1 pela combinação de 84 mil funcionários + 2.200 demissões em 2024 + sindicato muito ativo.
+        <span className="text-enter-white">Scores enriquecidos com dados reais</span>{' '}
+        (Glassdoor, demissões, sindicatos, jurimetria). Hapvida subiu +12 pela fusão massiva com NotreDame e ANS investigando.
+        O Bradesco lidera pela combinação de 84 mil funcionários + 2.200 demissões + sindicato muito ativo.
       </p>
     </div>
   );
