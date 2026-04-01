@@ -338,7 +338,7 @@ function WhatItDoes() {
     <div>
       <p className="font-mono text-label uppercase text-enter-gold mb-12">O Que Ela Faz</p>
       <h2 className="text-title-lg text-enter-white mb-16">
-        6 capacidades automáticas<br />
+        4 capacidades automáticas<br />
         <span className="text-enter-gold">para cada empresa</span>
       </h2>
 
