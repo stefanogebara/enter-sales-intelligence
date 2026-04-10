@@ -1,5 +1,6 @@
 import { useState, useCallback } from 'react';
 import Presentation from './components/Presentation';
+import Login from './components/Login';
 import Layout from './components/Layout';
 import Dashboard from './components/Dashboard';
 import RankingTable from './components/RankingTable';
@@ -7,6 +8,7 @@ import CompanyDetail from './components/CompanyDetail';
 import { qualifyCompany, generateDiscovery, generatePitch, runSimulation } from './lib/api';
 
 export default function App() {
+  const [authenticated, setAuthenticated] = useState(() => localStorage.getItem('enter_auth') === 'true');
   const [view, setView] = useState('presentation');
   const [selectedCompany, setSelectedCompany] = useState(null);
   const [analyses, setAnalyses] = useState({});
@@ -63,6 +65,10 @@ export default function App() {
   );
 
   const currentAnalysis = selectedCompany ? (analyses[selectedCompany.id] || {}) : {};
+
+  if (!authenticated) {
+    return <Login onLogin={() => setAuthenticated(true)} />;
+  }
 
   if (view === 'presentation') {
     return <Presentation onEnterPlatform={handleEnterPlatform} />;
